@@ -48,6 +48,10 @@ Process:
    git commit
    ```
 
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## 📜 Why use [cruft]
 
 What we need to share:
