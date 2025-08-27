@@ -39,6 +39,29 @@ others can benefit from the changes as well.
 `cruft` *will* try to respect your custom patches during the update process, but
 as you make more local changes you increase the chance of merge conflicts.
 
+## 🌲 Expected repository structure
+
+The shared scripts and workflows expect this repository to follow the
+[Tekton Catalog structure][tekton-catalog-structure].
+
+They also introduce new elements and conventions, such as the `${task_name}-oci-ta`
+directories for [Trusted Artifacts](#trusted-artifacts) tasks.
+
+Putting it all together, the structure is as follows:
+
+```text
+task                                    👈 all tasks go here
+├── hello                               👈 the name of a task
+│   └── 0.1                             👈 a specific version of the task
+│       ├── hello.yaml                  👈 ${task_name}.yaml
+│       └── README.md
+└── hello-oci-ta                        👈 ${task_name}-oci-ta for Trusted Artifacts
+    └── 0.1
+        ├── hello-oci-ta.yaml
+        ├── README.md
+        └── recipe.yaml                 👈 triggers auto-generation of the task yaml
+```
+
 ## ☑️ CI workflows
 
 ### Trusted Artifacts
@@ -130,3 +153,4 @@ to avoid those restrictions.
 [recipe.yaml]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts#configuration-in-recipeyaml
 [trusted-artifacts generator]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts
 [GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
+[tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
