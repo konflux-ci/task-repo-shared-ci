@@ -41,10 +41,17 @@ Process:
    git diff --diff-filter=D --name-only -- .github/ hack/ | xargs git checkout --
    ```
 
-4. Commit the files brought in from the template repo
+4. If you use [Renovate], create/update your renovate.json using the
+   [`hack/renovate-ignore-shared-ci.sh`](hack/renovate-ignore-shared-ci.sh) script:
 
    ```bash
-   git add .cruft.json .github/ hack/ SHARED-CI.md
+   hack/renovate-ignore-shared-ci.sh
+   ```
+
+5. Commit the files brought in during the onboarding
+
+   ```bash
+   git add .cruft.json renovate.json .github/ hack/ SHARED-CI.md
    git commit
    ```
 
@@ -124,3 +131,4 @@ to keep it up to date.
 [template repo]: https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository
 [cookiecutter]: https://cookiecutter.readthedocs.io/en/stable/
 [uv]: https://docs.astral.sh/uv/
+[Renovate]: https://docs.renovatebot.com/
