@@ -58,6 +58,29 @@ jobs:
             echo draft=false >> "$GITHUB_OUTPUT"
           fi
 
+          if [[ ! -e renovate.json ]]; then
+            echo "renovate.json doesn't exist, skipping update" >&2
+            exit
+          fi
+
+          renovate_update_script=hack/renovate-ignore-shared-ci.sh
+
+          for conflict in "${merge_conflicts[@]}" "${rejected_patches[@]}"; do
+            if [[ "$conflict" == "$renovate_update_script" ]]; then
+              cat << EOF >> /tmp/body.md
+
+          > [!WARNING]
+          >
+          > \`$renovate_update_script\` has a merge conflict, the workflow couldn't run it.
+          > After resolving the conflict, please run the script manually.
+          EOF
+              echo "cannot run $renovate_update_script due to merge conflict, skipping" >&2
+              exit
+            fi
+          done
+
+          bash "$renovate_update_script"
+
       - uses: actions/create-github-app-token@v2.0.6
         id: app-token
         with:
