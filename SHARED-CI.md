@@ -122,6 +122,10 @@ You can also trigger it manually from the Actions tab of your repo.
 > can encounter merge conflicts. When that happens, the workflow will send the
 > PR anyway but with the merge conflicts included. The PR will be in draft state
 > and will include a caution note (like this one, but red) with instructions.
+>
+> If your repository uses Renovate for automated dependency updates, that may increase
+> the chance of merge conflicts. See [Conflicts with Renovate](#conflicts-with-renovate)
+> for the solution.
 
 #### Required secrets
 
@@ -169,13 +173,31 @@ to avoid those restrictions.
    - `SHARED_CI_UPDATER_APP_ID`: the App ID number
    - `SHARED_CI_UPDATER_PRIVATE_KEY`: plaintext content of the private key
 
+#### Conflicts with Renovate
+
+If your repository uses [Renovate], you could frequently get merge conflicts
+during the Shared CI updates, because your repository gets GitHub Actions updates
+at a different rate than the upstream [task-repo-shared-ci] repository.
+
+To avoid that, your repo gets the [`hack/renovate-ignore-shared-ci.sh`](hack/renovate-ignore-shared-ci.sh)
+script. Run this script during the [onboarding process] to add all the Shared CI
+workflows to the [`ignorePaths`][renovate-ignorepaths] in your `renovate.json`.
+Afterwards, any time the updater workflow brings in a new workflow file, it will
+run the script to automatically update `renovate.json`.
+
+This ensures your Shared CI workflows follow the GitHub Actions versions defined
+in the upstream reposistory and avoids unnecessary merge conflicts.
+
 [task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
+[onboarding process]: https://github.com/konflux-ci/task-repo-shared-ci?tab=readme-ov-file#-onboarding
 [cruft]: https://cruft.github.io/cruft
 [uv]: https://docs.astral.sh/uv/
 [recipe.yaml]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts#configuration-in-recipeyaml
 [trusted-artifacts generator]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts
 [GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
 [tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
+[Renovate]: https://docs.renovatebot.com/
+[renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
 
 ### Task Integration Tests
 
