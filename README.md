@@ -42,7 +42,8 @@ Process:
    ```
 
 4. If you use [Renovate], create/update your renovate.json using the
-   [`hack/renovate-ignore-shared-ci.sh`](hack/renovate-ignore-shared-ci.sh) script:
+   [`hack/renovate-ignore-shared-ci.sh`](hack/renovate-ignore-shared-ci.sh) script
+   (see [why](./SHARED-CI.md#conflicts-with-renovate)):
 
    ```bash
    hack/renovate-ignore-shared-ci.sh
