@@ -188,17 +188,6 @@ run the script to automatically update `renovate.json`.
 This ensures your Shared CI workflows follow the GitHub Actions versions defined
 in the upstream reposistory and avoids unnecessary merge conflicts.
 
-[task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
-[onboarding process]: https://github.com/konflux-ci/task-repo-shared-ci?tab=readme-ov-file#-onboarding
-[cruft]: https://cruft.github.io/cruft
-[uv]: https://docs.astral.sh/uv/
-[recipe.yaml]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts#configuration-in-recipeyaml
-[trusted-artifacts generator]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts
-[GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
-[tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
-[Renovate]: https://docs.renovatebot.com/
-[renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
-
 ### Task Integration Tests
 
 - workflow: [`.github/workflows/run-task-tests.yaml`](.github/workflows/run-task-tests.yaml)
@@ -288,3 +277,15 @@ This check **disallows using `$(params.*)` variable substitution directly within
 Using `$(params.*)` directly in a script creates a security flaw. Tekton performs a raw text replacement of the parameter placeholder before the script is executed. This means if a parameter's value contains malicious shell commands, they will be run, leading to **arbitrary code execution**.
 
 For more details and guidance on fixing the issue, see the [Tekton recommendations](https://github.com/tektoncd/catalog/blob/main/recommendations.md#dont-use-interpolation-in-scripts-or-string-arguments)
+
+
+[task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
+[onboarding process]: https://github.com/konflux-ci/task-repo-shared-ci?tab=readme-ov-file#-onboarding
+[cruft]: https://cruft.github.io/cruft
+[uv]: https://docs.astral.sh/uv/
+[recipe.yaml]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts#configuration-in-recipeyaml
+[trusted-artifacts generator]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts
+[GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
+[tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
+[Renovate]: https://docs.renovatebot.com/
+[renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
