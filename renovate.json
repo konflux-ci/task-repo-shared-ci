@@ -1,0 +1,23 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "dependencyDashboard": false,
+  "prConcurrentLimit": 40,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        ".github/workflows/run-task-tests.yaml"
+      ],
+      "matchStrings": [
+        "ref:\\s+(?<currentDigest>[a-f0-9]{40})"
+      ],
+      "currentValueTemplate": "main",
+      "depNameTemplate": "konflux-ci",
+      "packageNameTemplate": "https://github.com/konflux-ci/konflux-ci",
+      "datasourceTemplate": "git-refs"
+    }
+  ]
+}
