@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: test-hello
+spec:
+  workspaces:
+    - name: tests-workspace
+      description: The workspace provided by the test runner script.
+  tasks:
+    - name: prepare-workspace
+      taskSpec:
+        workspaces:
+          - name: source
+        steps:
+          - name: create-source-dir
+            image: registry.access.redhat.com/ubi9/ubi-minimal:9.6
+            script: |
+              #!/bin/bash
+              set -e
+              mkdir -p $(workspaces.source.path)/source
+              echo "Created source subdirectory."
+      workspaces:
+        - name: source
+          workspace: tests-workspace
+
+    - name: run-hello-task
+      runAfter:
+        - prepare-workspace
+      taskRef:
+        name: hello
+      workspaces:
+        - name: source
+          workspace: tests-workspace
+
+    - name: verify-workspace-content
+      runAfter:
+        - run-hello-task
+      taskSpec:
+        workspaces:
+          - name: source
+        steps:
+          - name: check-for-file-and-content
+            image: registry.access.redhat.com/ubi9/ubi-minimal:9.6
+            script: |
+              #!/bin/bash
+              set -ex
+
+              FILE_PATH="$(workspaces.source.path)/source/hello.txt"
+              echo "Verifying content of ${FILE_PATH}..."
+
+              grep -q "Hello there!" "${FILE_PATH}"
+
+      workspaces:
+        - name: source
+          workspace: tests-workspace
