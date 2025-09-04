@@ -172,17 +172,6 @@ run the script to automatically update `renovate.json`.
 This ensures your Shared CI workflows follow the GitHub Actions versions defined
 in the upstream reposistory and avoids unnecessary merge conflicts.
 
-[task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
-[onboarding process]: https://github.com/konflux-ci/task-repo-shared-ci?tab=readme-ov-file#-onboarding
-[cruft]: https://cruft.github.io/cruft
-[uv]: https://docs.astral.sh/uv/
-[recipe.yaml]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts#configuration-in-recipeyaml
-[trusted-artifacts generator]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts
-[GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
-[tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
-[Renovate]: https://docs.renovatebot.com/
-[renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
-
 ### Task Integration Tests
 
 - workflow: [`.github/workflows/run-task-tests.yaml`](.github/workflows/run-task-tests.yaml)
@@ -260,3 +249,15 @@ echo "Pre-requirements setup complete for namespace: $TEST_NS"
 
 ```
 </details>
+
+
+[task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
+[onboarding process]: https://github.com/konflux-ci/task-repo-shared-ci?tab=readme-ov-file#-onboarding
+[cruft]: https://cruft.github.io/cruft
+[uv]: https://docs.astral.sh/uv/
+[recipe.yaml]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts#configuration-in-recipeyaml
+[trusted-artifacts generator]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts
+[GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
+[tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
+[Renovate]: https://docs.renovatebot.com/
+[renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
