@@ -6,7 +6,7 @@ name: Validate PR - kustomize manifests
     types: [checks_requested]
 jobs:
   kustomize-build:
-    name: Check Kustomize Build of Task and Pipelines
+    name: Check Kustomize Build of Task
     runs-on: ubuntu-latest
     steps:
       - name: Check out code

@@ -22,12 +22,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 SKIP_TASKS=
 
-# You can ignore building manifests for some pipelines by providing the SKIP_PIPELINES variable
-# with the task name separated by a space, for example:
-# SKIP_PIPELINES="rhtap gitops-pull-request-rhtap"
-
-SKIP_PIPELINES="gitops-pull-request-rhtap"
-
 warning_message="# WARNING: This is an auto generated file, do not modify this file directly"
 
 main() {
@@ -62,37 +56,6 @@ main() {
         fi
         # Add a warning message in the generated file
         ${SED_CMD} -i "1 i $warning_message" "task/$task_name/$task_version/$task_name.yaml"
-    done
-
-    find pipelines -maxdepth 2 -mindepth 2 -type f -name "*.yaml" | awk -F '/' '{ print $0, $2, $3 }' | \
-    while read -r pipeline_path pipeline_name file_name
-    do
-        if [[ "$file_name" == "kustomization.yaml" ]]; then
-          echo "Building pipeline manifest for: $pipeline_name"
-        else
-          continue
-        fi
-
-        # Skip the pipelines mentioned in SKIP_PIPELINES
-        skipit=
-        for pname in ${SKIP_PIPELINES};do
-            [[ ${pname} == "${pipeline_name}" ]] && skipit=True
-        done
-        [[ -n ${skipit} ]] && continue
-
-        # Check if there is only one resource in the kustomization file and it is <pipeline_name>.yaml
-        resources=$(yq -r '.resources[]' "$pipeline_path")
-        if [[ "$resources" == "$pipeline_name.yaml" ]]; then
-          echo "Skip generating manifest for the pipeline: $pipeline_name"
-          continue
-        fi
-        if ! oc kustomize -o "pipelines/$pipeline_name/$pipeline_name.yaml" "pipelines/$pipeline_name"; then
-            echo "failed to build pipeline: $pipeline_name" >&2
-            ret=1
-            continue
-        fi
-        # Add a warning message in the generated file
-        ${SED_CMD} -i "1 i $warning_message" "pipelines/$pipeline_name/$pipeline_name.yaml"
     done
 
     exit "$ret"
