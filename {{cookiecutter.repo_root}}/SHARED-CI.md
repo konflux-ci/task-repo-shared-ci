@@ -47,6 +47,8 @@ The shared scripts and workflows expect this repository to follow the
 They also introduce new elements and conventions, such as the `${task_name}-oci-ta`
 directories for [Trusted Artifacts](#trusted-artifacts) tasks.
 
+For details on how the `tests` directory is used, see [Task Integration Tests](#task-integration-tests).
+
 Putting it all together, the structure is as follows:
 
 ```text
@@ -55,6 +57,10 @@ task                                    👈 all tasks go here
 │   └── 0.1                             👈 a specific version of the task
 │       ├── hello.yaml                  👈 ${task_name}.yaml
 │       └── README.md
+│       └── tests                       👈 Test directory
+│           └── test-hello.yaml         👈 Test - A Pipeline named test-*.yaml
+│           └── test-hello-2.yaml       👈 Test case 2
+│           └── pre-apply-task-hook.sh  👈 Optional hook
 └── hello-oci-ta                        👈 ${task_name}-oci-ta for Trusted Artifacts
     └── 0.1
         ├── hello-oci-ta.yaml
@@ -154,3 +160,81 @@ to avoid those restrictions.
 [trusted-artifacts generator]: https://github.com/konflux-ci/build-definitions/tree/main/task-generator/trusted-artifacts
 [GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
 [tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
+
+### Task Integration Tests
+
+- workflow: [`.github/workflows/run-task-tests.yaml`](.github/workflows/run-task-tests.yaml)
+- script: [`.github/scripts/test_tekton_tasks.sh`](.github/scripts/test_tekton_tasks.sh)
+
+This workflow automatically runs integration tests for any Tekton Task that is changed in a pull request. It spins up a temporary Kubernetes (Kind) cluster, deploys Tekton, and then executes the tests defined for the modified task.
+
+#### How to Add a Test
+
+1. Create a `tests` directory inside the task's versioned folder.  
+
+2. Inside the `tests` directory, create a test file named `test-*.yaml` (for example, `test-hello.yaml`).  
+   - The script **automatically** discovers tests based on this naming convention.  
+
+3. The file must define a Tekton `kind: Pipeline` object.  
+
+4. The Pipeline must declare a workspace named exactly `tests-workspace`.  
+   - The test script will **automatically** provide storage for this workspace when it runs the pipeline.  
+
+5. Optionally, add a `pre-apply-task-hook.sh` to the `tests` directory.
+
+#### Example Structure
+
+```plaintext
+task
+└── hello
+    └── 0.1
+        ├── hello.yaml
+        └── tests                         👈 Test directory
+            └── test-hello.yaml           👈 Test - A Pipeline named test-*.yaml
+            └── test-hello-2.yaml         👈 Test case 2
+            └── pre-apply-task-hook.sh    👈 Optional hook
+```
+
+#### Using a `pre-apply-task-hook.sh`
+
+In some cases, your Task may require certain Kubernetes resources, like **Secrets** or **ConfigMaps**, to exist in the namespace before the Task itself is applied to the cluster.
+
+To handle this, you can create an optional shell script named `pre-apply-task-hook.sh` and place it inside the `tests` directory.
+
+If this script exists, the test runner will execute it **after creating the test namespace but before applying the task**. 
+This allows the hook to dynamically modify the task's definition before it is applied. For example, to lower/remove resource requests and limits for a constrained test environment.
+
+The script receives two arguments:
+
+- `$1`: The path to a temporary copy of the task's YAML file.  
+- `$2`: The name of the temporary test namespace where the test will run.  
+
+
+<details>
+<summary><b>Click to see an example <code>pre-apply-task-hook.sh</code></b></summary>
+
+This script removes comupteResources and creates a dummy docker config secret that a task might need for registry authentication.
+
+```bash
+#!/bin/bash
+
+# This script is called before applying the task to set up required resources.
+TASK_COPY="$1"
+TEST_NS="$2"
+
+# Remove computeResources - allows tasks with high resource requirements
+# to run in a resource-constrained test environment (e.g., local Kind cluster)
+echo "Removing computeResources for task: $1"
+yq -i eval '.spec.steps[0].computeResources = {}' $1
+yq -i eval '.spec.steps[1].computeResources = {}' $1
+
+# Create a dummy docker config secret for registry authentication
+echo '{"auths":{}}' | kubectl create secret generic dummy-secret \
+  --from-file=.dockerconfigjson=/dev/stdin \
+  --type=kubernetes.io/dockerconfigjson \
+  -n "$TEST_NS" --dry-run=client -o yaml | kubectl apply -f - -n "$TEST_NS"
+
+echo "Pre-requirements setup complete for namespace: $TEST_NS"
+
+```
+</details>  
