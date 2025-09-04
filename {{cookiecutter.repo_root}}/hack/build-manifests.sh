@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+# <TEMPLATED FILE!>
+# This file comes from the templates at https://github.com/konflux-ci/task-repo-shared-ci.
+# Please consider sending a PR upstream instead of editing the file directly.
+# See the SHARED-CI.md document in this repo for more details.
+
 # To make the script work on linux and mac, use '${SED_CMD}' instead of 'sed'
 # https://stackoverflow.com/a/4247319
 if [[ "$OSTYPE" == "darwin"* ]]; then
