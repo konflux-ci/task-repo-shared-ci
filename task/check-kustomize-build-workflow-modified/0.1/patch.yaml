@@ -1,0 +1,8 @@
+- op: replace
+  path: /metadata/name
+  value: check-kustomize-build-workflow-modified
+# To test/trigger failure of check-kustomize-build
+# uncomment the code below and add it to a PR (without building the new task manifest)
+# - op: replace
+#   path: /spec/steps/0/computeResources/limits/memory
+#   value: 512Mi

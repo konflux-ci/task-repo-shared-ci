@@ -1,0 +1,31 @@
+# WARNING: This is an auto generated file, do not modify this file directly
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  annotations:
+    tekton.dev/tags: konflux
+  labels:
+    app.kubernetes.io/version: "0.1"
+  name: check-kustomize-build-workflow-modified
+spec:
+  description: |-
+    Dummy task whose purpose is to:
+
+    1. Make it easier to test the behavior of the scripts and workflows in this repo
+    2. Provide an example of the repo layout that the workflows expect to operate on
+  steps:
+  - computeResources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    image: registry.access.redhat.com/ubi9/ubi-micro:9.6@sha256:f5c5213d2969b7b11a6666fc4b849d56b48d9d7979b60a37bb853dff0255c14b
+    name: hello
+    script: |
+      #!/bin/bash
+
+      echo "Hello there!" >> "$(workspaces.source.path)/source/hello.txt"
+  workspaces:
+  - description: Workspace with the source code (at subpath /source)
+    name: source

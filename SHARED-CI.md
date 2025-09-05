@@ -61,14 +61,41 @@ task                                    👈 all tasks go here
 │           └── test-hello.yaml         👈 Test - A Pipeline named test-*.yaml
 │           └── test-hello-2.yaml       👈 Test case 2
 │           └── pre-apply-task-hook.sh  👈 Optional hook
-└── hello-oci-ta                        👈 ${task_name}-oci-ta for Trusted Artifacts
+├── hello-oci-ta                        👈 ${task_name}-oci-ta for Trusted Artifacts
+│   └── 0.1
+│       ├── hello-oci-ta.yaml
+│       ├── README.md
+│       └── recipe.yaml                 👈 triggers auto-generation of the task yaml
+├── check-kustomize-build-workflow-base
+│   └── 0.1
+│       ├── check-kustomize-build-workflow-base.yaml
+│       ├── kustomization.yaml          👈 Kustomize base
+│       └── README.md
+└── check-kustomize-build-workflow-modified
     └── 0.1
-        ├── hello-oci-ta.yaml
-        ├── README.md
-        └── recipe.yaml                 👈 triggers auto-generation of the task yaml
+        ├── check-kustomize-build-workflow-modified.yaml
+        ├── kustomization.yaml          👈 Kustomize overlay
+        ├── patch.yaml                  👈 applied patch
+        └── README.md
 ```
 
 ## ☑️ CI workflows
+
+### Kustomize Build
+
+- script: [`hack/build-manifests.sh`](hack/build-manifests.sh)
+  - Generates task manifest YAML files from Kustomize definitions (kustomize.yaml, patch.yaml)
+- workflow: [`.github/workflows/check-kustomize-build.yaml`](.github/workflows/check-kustomize-build.yaml)
+  - Checks if all task manifests are up to date (no rebuild required).
+
+With Kustomize, Task manifests are generated and kept consistent across the
+repository by composing base definitions (kustomize.yaml) with patches (patch.yaml).
+This ensures that all Task YAML manifests are reproducible and remain in sync 
+with their source definitions.
+
+When authoring or modifying a Task, contributors should update the corresponding
+Kustomize files and regenerate the manifests rather than editing the YAML directly.
+Use [`hack/build-manifests.sh`](hack/build-manifests.sh) to regenerate the manifests.
 
 ### Trusted Artifacts
 
