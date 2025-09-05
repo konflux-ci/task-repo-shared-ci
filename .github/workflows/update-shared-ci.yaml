@@ -58,8 +58,30 @@ jobs:
             echo draft=false >> "$GITHUB_OUTPUT"
           fi
 
-          if [[ ! -e renovate.json ]]; then
-            echo "renovate.json doesn't exist, skipping update" >&2
+          renovate_config_exists() {
+            # https://docs.renovatebot.com/configuration-options/
+            local renovate_config_paths=(
+              renovate.json
+              renovate.json5
+              .github/renovate.json
+              .github/renovate.json5
+              .gitlab/renovate.json
+              .gitlab/renovate.json5
+              .renovaterc
+              .renovaterc.json
+              .renovaterc.json5
+            )
+
+            for file in "${renovate_config_paths[@]}"; do
+              if [[ -e "$file" ]]; then
+                return 0
+              fi
+            done
+
+            return 1
+          }
+          if ! renovate_config_exists; then
+            echo "Renovate config file not found, skipping update" >&2
             exit
           fi
 
