@@ -238,3 +238,15 @@ echo "Pre-requirements setup complete for namespace: $TEST_NS"
 
 ```
 </details>  
+
+### Tekton Security Task Lint
+
+To enforce secure CI practices, we lint all Tekton Tasks on every pull request using the `task-lint.yaml` workflow.
+
+#### Purpose
+
+This check **disallows using `$(params.*)` variable substitution directly within a `script` block** of a Tekton Task.
+
+Using `$(params.*)` directly in a script creates a security flaw. Tekton performs a raw text replacement of the parameter placeholder before the script is executed. This means if a parameter's value contains malicious shell commands, they will be run, leading to **arbitrary code execution**.
+
+For more details and guidance on fixing the issue, see the [Tekton recommendations](https://github.com/tektoncd/catalog/blob/main/recommendations.md#dont-use-interpolation-in-scripts-or-string-arguments)
