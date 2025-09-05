@@ -70,6 +70,22 @@ task                                    👈 all tasks go here
 
 ## ☑️ CI workflows
 
+### Kustomize Build
+
+- script: [`hack/build-manifests.sh`](hack/build-manifests.sh)
+  - Generates task manifest YAML files from Kustomize definitions (kustomize.yaml, patch.yaml)
+- workflow: [`.github/workflows/check-kustomize-build.yaml`](.github/workflows/check-kustomize-build.yaml)
+  - Checks if all task manifests are up to date (no rebuild required).
+
+With Kustomize, Task manifests are generated and kept consistent across the
+repository by composing base definitions (kustomize.yaml) with patches (patch.yaml).
+This ensures that all Task YAML manifests are reproducible and remain in sync 
+with their source definitions.
+
+When authoring or modifying a Task, contributors should update the corresponding
+Kustomize files and regenerate the manifests rather than editing the YAML directly.
+Use [`hack/build-manifests.sh`](hack/build-manifests.sh) to regenerate the manifests.
+
 ### Trusted Artifacts
 
 - script: [`hack/generate-ta-tasks.sh`](hack/generate-ta-tasks.sh)
