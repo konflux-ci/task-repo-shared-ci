@@ -13,8 +13,7 @@
       ],
       "schedule": [
         "on sunday"
-      ],
-      "automerge": true
+      ]
     }
   ],
   "customManagers": [
