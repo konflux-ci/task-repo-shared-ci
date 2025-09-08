@@ -103,7 +103,7 @@ jobs:
 
           bash "$renovate_update_script"
 
-      - uses: actions/create-github-app-token@v2.0.6
+      - uses: actions/create-github-app-token@v2.1.1
         id: app-token
         with:
           # These may already be set globally for your organization
