@@ -288,6 +288,22 @@ Using `$(params.*)` directly in a script creates a security flaw. Tekton perform
 
 For more details and guidance on fixing the issue, see the [Tekton recommendations](https://github.com/tektoncd/catalog/blob/main/recommendations.md#dont-use-interpolation-in-scripts-or-string-arguments)
 
+### Tekton Task Validation
+
+To ensure all Tekton Tasks are well-formed and valid, a `Check Tekton Tasks` workflow is executed on every pull request. This workflow serves as a safeguard to block invalid tasks from being merged, so we don’t risk breaking users.
+
+#### If the Check Fails
+
+- Open the workflow logs in GitHub Actions
+- Look at the `Apply all Tasks` step
+- The logs will show which Task file failed and the exact error
+
+> [!NOTE]  
+> The `setup-tektoncd` step may occasionally fail due to GitHub API `rate limits` (see [tektoncd/actions#9](https://github.com/tektoncd/actions/issues/9)).  
+> This is a known issue and not related to your changes.  
+>  
+> The current workaround is to `re-run the workflow`.
+
 
 [task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
 [onboarding process]: https://github.com/konflux-ci/task-repo-shared-ci?tab=readme-ov-file#-onboarding
