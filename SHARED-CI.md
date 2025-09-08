@@ -70,6 +70,16 @@ task                                    👈 all tasks go here
 
 ## ☑️ CI workflows
 
+### Checkton
+
+- script: [`hack/checkton-local.sh`](hack/checkton-local.sh)
+  - Allows running checkton locally.
+- workflow: [`.github/workflows/checkton.yaml`](.github/workflows/checkton.yaml)
+  - Runs ShellCheck on scripts embedded in YAML files.
+
+Checkton is used to lint shell scripts embedded in YAML files (primarily Tekton files). 
+It does so by running ShellCheck. For more details, see the [checkton project](https://github.com/chmeliik/checkton)
+
 ### Kustomize Build
 
 - script: [`hack/build-manifests.sh`](hack/build-manifests.sh)
