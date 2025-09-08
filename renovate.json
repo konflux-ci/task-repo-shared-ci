@@ -5,6 +5,18 @@
   ],
   "dependencyDashboard": false,
   "prConcurrentLimit": 40,
+  "packageRules": [
+    {
+      "groupName": "github-actions",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "schedule": [
+        "on sunday"
+      ],
+      "automerge": true
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",
