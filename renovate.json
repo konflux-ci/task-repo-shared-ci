@@ -26,6 +26,14 @@
         "pin"
       ],
       "automerge": true
+    },
+    {
+      "matchDepNames": [
+        "konflux-ci"
+      ],
+      "schedule": [
+        "on sunday"
+      ]
     }
   ],
   "customManagers": [
