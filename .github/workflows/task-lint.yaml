@@ -31,14 +31,19 @@ jobs:
         id: linter-script
         run: |
           #!/bin/bash
-          for task in $(find task -name '*.yaml'); do
-            if yq '.spec?.steps[] | .script' $task | grep -q '\$(params\.'; then
-              FAILED_TASKS="$FAILED_TASKS $task"
+
+          FAILED_TASKS=()
+
+          while read -r task; do
+            # shellcheck disable=SC2016  # we don't want to expand $(params)
+            if yq '.spec?.steps[] | .script' "$task" | grep -q '\$(params\.'; then
+              FAILED_TASKS+=("$task")
             fi
-          done
-          if [ -n "$FAILED_TASKS" ]; then
+          done < <(find task -name '*.yaml')
+
+          if [ "${#FAILED_TASKS[@]}" -gt 0 ]; then
             echo "Tasks contains params in script section (https://github.com/tektoncd/catalog/blob/main/recommendations.md#dont-use-interpolation-in-scripts-or-string-arguments)"
             echo "This is disallowed as it can lead to arbitrary code execution"
-            echo $FAILED_TASKS | tr ' ' '\n' | sort
+            printf '%s\n' "${FAILED_TASKS[@]}" | sort
             exit 1
           fi
