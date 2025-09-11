@@ -52,8 +52,9 @@ jobs:
           >
           > Please address the problems manually and then mark the PR ready for review.
           >
-          $(printf '> - ❌ `%s`\n' "${merge_conflicts[@]}" "${rejected_patches[@]}")
           EOF
+            # shellcheck disable=SC2016  # we don't want to expand the backticks
+            printf '> - ❌ `%s`\n' "${merge_conflicts[@]}" "${rejected_patches[@]}" >> /tmp/body.md
           else
             echo draft=false >> "$GITHUB_OUTPUT"
           fi
