@@ -19,10 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout this repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
 
       - name: "Install yq"
-        uses: mikefarah/yq@v4
+        uses: mikefarah/yq@6251e95af8df3505def48c71f3119836701495d6 # v4.47.2
         with:
           # Version from https://github.com/mikefarah/yq/releases
           version: 'v4.47.1'
