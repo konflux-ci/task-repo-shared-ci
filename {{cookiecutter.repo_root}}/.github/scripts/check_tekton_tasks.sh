@@ -7,22 +7,23 @@ set -euo pipefail
 # Please consider sending a PR upstream instead of editing the file directly.
 # See the SHARED-CI.md document in this repo for more details.
 
+if [ "$#" -eq 0 ]; then
+    echo "No changed task directories provided, nothing to validate"
+    exit 0
+fi
+
 echo ">>> Applying and validating Tekton Tasks"
 
-for task_folder in task/*/; do
-  if [ -d "$task_folder" ]; then
-    task_name="$(basename "$task_folder")"
-    echo ">>> Validating Task: $task_name"
-    
-    (
-      cd "$task_folder"
-      for version in */; do
-        if [ -d "$version" ]; then
-          kubectl apply -f "$version/$task_name.yaml" --dry-run=server
-        fi
-      done
-    )
-  fi
+for TASK_DIR in "$@"; do
+    TASK_NAME=$(basename "$(dirname "$TASK_DIR")")
+    TASK_YAML_PATH="${TASK_DIR}/${TASK_NAME}.yaml"
+
+    if [ -f "$TASK_YAML_PATH" ]; then
+        echo ">>> Validating Task: $TASK_YAML_PATH"
+        kubectl apply -f "$TASK_YAML_PATH" --dry-run=server
+    else
+        echo "INFO: Task YAML not found at '$TASK_YAML_PATH'. A non-YAML file was changed, skipping..."
+    fi
 done
 
-echo ">>> All tasks validated successfully."
+echo ">>> All changed tasks validated successfully."
