@@ -198,12 +198,18 @@ run the script to automatically update `renovate.json`.
 This ensures your Shared CI workflows follow the GitHub Actions versions defined
 in the upstream reposistory and avoids unnecessary merge conflicts.
 
-### Task Integration Tests
+### Task Validation and Integration Tests
 
 - workflow: [`.github/workflows/run-task-tests.yaml`](.github/workflows/run-task-tests.yaml)
-- script: [`.github/scripts/test_tekton_tasks.sh`](.github/scripts/test_tekton_tasks.sh)
+- tests script: [`.github/scripts/test_tekton_tasks.sh`](.github/scripts/test_tekton_tasks.sh)
+- validation script: [`.github/scripts/check_tekton_tasks.sh`](.github/scripts/check_tekton_tasks.sh)
 
-This workflow automatically runs integration tests for any Tekton Task that is changed in a pull request. It spins up a temporary Kubernetes (Kind) cluster, deploys Tekton, and then executes the tests defined for the modified task.
+To ensure all Tekton Tasks are well-formed and valid, a single `Run Task Tests` workflow is executed on every pull request that modifies files in the `task/` directory.
+
+This workflow is designed to be efficient by following a two-stage logic:
+
+1. `Syntax Validation`
+2. `Integration Tests`
 
 #### How to Add a Test
 
@@ -287,22 +293,6 @@ This check **disallows using `$(params.*)` variable substitution directly within
 Using `$(params.*)` directly in a script creates a security flaw. Tekton performs a raw text replacement of the parameter placeholder before the script is executed. This means if a parameter's value contains malicious shell commands, they will be run, leading to **arbitrary code execution**.
 
 For more details and guidance on fixing the issue, see the [Tekton recommendations](https://github.com/tektoncd/catalog/blob/main/recommendations.md#dont-use-interpolation-in-scripts-or-string-arguments)
-
-### Tekton Task Validation
-
-To ensure all Tekton Tasks are well-formed and valid, a `Check Tekton Tasks` workflow is executed on every pull request. This workflow serves as a safeguard to block invalid tasks from being merged, so we don’t risk breaking users.
-
-#### If the Check Fails
-
-- Open the workflow logs in GitHub Actions
-- Look at the `Apply all Tasks` step
-- The logs will show which Task file failed and the exact error
-
-> [!NOTE]  
-> The `setup-tektoncd` step may occasionally fail due to GitHub API `rate limits` (see [tektoncd/actions#9](https://github.com/tektoncd/actions/issues/9)).  
-> This is a known issue and not related to your changes.  
->  
-> The current workaround is to `re-run the workflow`.
 
 
 [task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
