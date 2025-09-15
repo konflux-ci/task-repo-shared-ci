@@ -48,7 +48,7 @@ spec:
               FILE_PATH="$(workspaces.source.path)/source/hello.txt"
               echo "Verifying content of ${FILE_PATH}..."
 
-              grep -q "Hello there!" "${FILE_PATH}"
+              grep -q "Hello there, Mr. Frodo!" "${FILE_PATH}"
 
       workspaces:
         - name: source
