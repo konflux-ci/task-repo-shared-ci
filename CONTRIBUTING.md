@@ -22,7 +22,8 @@
       all rendering so that we don't have to bother with that.
   * You may have noticed that we kind of work around the entirety of Cookiecutter
     by configuring it this way. Why use it at all then? Single reason: so that
-    those who onboard can get automated updates using [`cruft`][cruft].
+    those who onboard can get automated updates using [`cruft`][cruft] (if you'd
+    like to know more, see [docs/why-cruft.md](docs/why-cruft.md)).
 * [`.github/`](.github/)
   * Your standard `.github` directory for workflows and related resources
   * Most of the files are copy-pasted from `{{cookiecutter.repo_root}}/`
