@@ -77,7 +77,7 @@ declare -r pipeline_file=\${1:missing pipeline file}
 
 # migration code here...
 #
-# For an example, refer to https://github.com/konflux-ci/build-definitions/?tab=readme-ov-file#task-migration
+# For an example, refer to the 'Task migration' section in SHARED-CI.md
 "
 }
 
