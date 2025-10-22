@@ -28,6 +28,22 @@ emit() {
 
 {
   cd "${git_root}"
+
+  IGNORE_PATHS=()
+  IGNORE_WORKSPACES=()
+  for ignorefile in .github/.ta-ignore.yaml .ta-ignore.yaml; do
+    if [[ -e "$ignorefile" ]]; then
+      echo "Using ignorefile: $ignorefile"
+
+      mapfile -t IGNORE_PATHS < <(yq -r '.paths[]?' "$ignorefile")
+      mapfile -t IGNORE_WORKSPACES < <(yq -r '.workspaces[]?' "$ignorefile")
+
+      echo "Ignored paths: ${IGNORE_PATHS[*]}"
+      echo "Ignored workspaces: ${IGNORE_WORKSPACES[*]}"
+      break
+    fi
+  done
+
   missing=0
   for task in task/**/*.yaml; do
       # archived tasks need to be skipped
@@ -48,16 +64,26 @@ emit() {
               ;;
       esac
 
+      for pattern in "${IGNORE_PATHS[@]}"; do
+        # shellcheck disable=SC2053  # glob matching is intentional here
+        if [[ "${task}" == ${pattern} ]]; then
+          continue 2
+        fi
+      done
+
       # we are looking at a Task
       yq -e '.kind != "Task"' "${task_file}" > /dev/null 2>&1 && continue
 
       # path elements of the task file path
       readarray -d / paths <<< "${task}"
       # PVC non-optional workspaces used
-      readarray -t workspaces <<< "$(yq '[.spec.workspaces[] | .name] | .[]' "${task_file}")"
+      workspaces=$(yq -o json '[.spec.workspaces[].name]' "${task_file}")
+      disallowed_workspaces=$(
+        jq -nc '$workspaces - $ARGS.positional' --argjson workspaces "$workspaces" --args "${IGNORE_WORKSPACES[@]}"
+      )
 
       # is the task using a workspace(s) to share files?
-      [[ "${#workspaces}" -eq 0 ]] && continue
+      [[ "$disallowed_workspaces" == '[]' ]] && continue
 
       # is there a newer version of the task
       base_task_path=("${paths[@]}")
@@ -74,7 +100,7 @@ emit() {
       paths[-2]="${paths[-2]%/}-oci-ta/"
       ta_dir="$(IFS=''; echo "${paths[*]}")"
       if [[ ! -d "${ta_dir}" ]]; then
-          emit error "${task}" "Task is using a workspace(s): ${workspaces[*]}, to share data and needs a corresponding Trusted Artifacts Task variant in ${ta_dir}"
+          emit error "${task}" "Task is using a workspace(s): ${disallowed_workspaces}, to share data and needs a corresponding Trusted Artifacts Task variant in ${ta_dir}"
           missing=$((missing + 1))
       fi
   done
