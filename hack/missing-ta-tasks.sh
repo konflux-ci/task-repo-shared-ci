@@ -11,35 +11,9 @@ set -o pipefail
 shopt -s globstar
 
 git_root=$(git rev-parse --show-toplevel)
-policy_file="${git_root}/policies/all-tasks.yaml"
 
 tmp_files=()
 trap 'rm "${tmp_files[@]}" > /dev/null 2>&1' EXIT
-
-# Tasks that are currently missing Trusted Artifact variant
-todo=(
-  task/buildah-min/0.2/kustomization.yaml
-  task/buildah-min/0.2/buildah-min.yaml
-  task/buildah-min/0.4/kustomization.yaml
-  task/buildah-min/0.4/buildah-min.yaml
-  task/buildah-min/0.5/kustomization.yaml
-  task/buildah-min/0.5/buildah-min.yaml
-  task/buildah-min/0.6/kustomization.yaml
-  task/buildah-min/0.6/buildah-min.yaml
-  task/buildah-rhtap/0.1/buildah-rhtap.yaml
-  task/download-sbom-from-url-in-attestation/0.1/download-sbom-from-url-in-attestation.yaml
-  task/gather-deploy-images/0.1/gather-deploy-images.yaml
-  task/operator-sdk-generate-bundle/0.1/operator-sdk-generate-bundle.yaml
-  task/opm-get-bundle-version/0.1/opm-get-bundle-version.yaml
-  task/opm-render-bundles/0.1/opm-render-bundles.yaml
-  task/sast-unicode-check/0.1/sast-unicode-check.yaml
-  task/slack-webhook-notification/0.1/slack-webhook-notification.yaml
-  task/summary/0.2/summary.yaml
-  task/update-infra-deployments/0.1/update-infra-deployments.yaml
-  task/upload-sbom-to-trustification/0.1/upload-sbom-to-trustification.yaml
-  task/verify-enterprise-contract/0.1/kustomization.yaml
-  task/verify-enterprise-contract/0.1/verify-enterprise-contract.yaml
-)
 
 emit() {
   kind="$1"
@@ -74,20 +48,13 @@ emit() {
               ;;
       esac
 
-      for t in "${todo[@]}"; do
-        if [[ "${t}" == "${task}" ]]; then
-          emit warning "${task}" 'TODO: Task needs a Trusted Artifacts variant created'
-          continue 2
-        fi
-      done
-
       # we are looking at a Task
       yq -e '.kind != "Task"' "${task_file}" > /dev/null 2>&1 && continue
 
       # path elements of the task file path
       readarray -d / paths <<< "${task}"
       # PVC non-optional workspaces used
-      readarray -t workspaces <<< "$(yq ea '[select(fileIndex == 0).spec.workspaces[] | .name] - [select(fileIndex == 1).sources[].ruleData.allowed_trusted_artifacts_workspaces[] | .] | .[] | {"x": .} | "\(.x)"' "${task_file}" "${policy_file}")"
+      readarray -t workspaces <<< "$(yq '[.spec.workspaces[] | .name] | .[]' "${task_file}")"
 
       # is the task using a workspace(s) to share files?
       [[ "${#workspaces}" -eq 0 ]] && continue
