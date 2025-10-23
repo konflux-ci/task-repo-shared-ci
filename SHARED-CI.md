@@ -257,8 +257,11 @@ Use [`hack/build-manifests.sh`](hack/build-manifests.sh) to regenerate the manif
 
 - script: [`hack/generate-ta-tasks.sh`](hack/generate-ta-tasks.sh)
   - Generates Trusted Artifacts variants of Tasks. See below for more details.
+- script: [`hack/missing-ta-tasks.sh`](hack/missing-ta-tasks.sh)
+  - Checks that all Tasks that use workspaces have a Trusted Artifacts variant.
 - workflow: [`.github/workflows/check-ta.yaml`](.github/workflows/check-ta.yaml)
-  - Checks that the Trusted Artifacts variants are up to date with their base Tasks.
+  - Checks that Tasks have Trusted Artifacts variants and that those variants
+    are up to date with their base Tasks.
 
 With Trusted Artifacts (TA), Tasks share files via the use of archives stored in
 an image repository and not using attached storage (PersistentVolumeClaims). This
@@ -274,6 +277,27 @@ To author a Trusted Artifacts variant of a Task, create the `${task_name}-oci-ta
 directory, define a [`recipe.yaml`][recipe.yaml] inside the directory and generate
 the TA variant using the [`hack/generate-ta-tasks.sh`](hack/generate-ta-tasks.sh)
 script. See the [trusted-artifacts generator] README for more details.
+
+#### Ignore missing Trusted Artifacts tasks
+
+The `missing-ta-tasks` script supports an ignore file located at one of these paths
+(listed in order of precedence from highest to lowest):
+
+- `.github/.ta-ignore.yaml`
+- `.ta-ignore.yaml`
+
+```yaml
+# Task paths (glob patterns) to ignore
+paths:
+  - task/hello/0.2/hello.yaml
+  - task/another-task/*
+
+# Workspaces that even TA-compatible Tasks can use
+# (i.e. workspaces that are not used for sharing data between tasks)
+workspaces:
+  - netrc-auth
+  - git-auth
+```
 
 ### Shared CI Updater
 
