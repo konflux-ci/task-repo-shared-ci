@@ -98,7 +98,7 @@ emit() {
 
   if [[ ${missing} -gt 0 ]]; then
     if [ "${GITHUB_ACTIONS:-false}" == "true" ]; then
-      echo '::notice title=Missing Trusted Artifact Task Variant::Found Tasks that share data via PersistantVolumeClaim volumes without a corresponding Trusted Artifacts Variant. Please create the Trusted Artifacts Variant of the Task as well'
+      echo '::notice title=Missing Trusted Artifact Task Variant::Found Tasks that share data via workspaces without a corresponding Trusted Artifacts Variant. Please create the Trusted Artifacts Variant of the Task as well'
       exit 1
     fi
   fi
