@@ -38,6 +38,11 @@ spec:
   volumes:
     - name: workdir
       emptyDir: {}
+  workspaces:
+    - name: auth
+      description: Workspace with some kind of authentication credentials.
+        Optional.
+      optional: true
   stepTemplate:
     volumeMounts:
       - mountPath: /var/workdir
@@ -53,11 +58,19 @@ spec:
       env:
         - name: PIPELINERUN_NAME
           value: $(params.pipelinerun-name)
+        - name: WORKSPACE_AUTH_BOUND
+          value: $(workspaces.auth.bound)
+        - name: WORKSPACE_AUTH_PATH
+          value: $(workspaces.auth.path)
       script: |
         #!/bin/bash
 
         echo "Hello there!" >>"/var/workdir/source/hello.txt"
         echo "PipelineRun name: $PIPELINERUN_NAME" >>"/var/workdir/source/hello.txt"
+
+        if [[ "$WORKSPACE_AUTH_BOUND" = true ]]; then
+          ls -a "$WORKSPACE_AUTH_PATH"
+        fi
       computeResources:
         limits:
           memory: 256Mi

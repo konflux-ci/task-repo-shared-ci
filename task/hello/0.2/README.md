@@ -21,3 +21,4 @@ Missing file task/hello/0.2/MIGRATION.md
 |name|description|optional|
 |---|---|---|
 |source|Workspace with the source code (at subpath /source)|false|
+|auth|Workspace with some kind of authentication credentials. Optional.|true|

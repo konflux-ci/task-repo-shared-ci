@@ -32,12 +32,23 @@ spec:
       env:
         - name: PIPELINERUN_NAME
           value: "$(params.pipelinerun-name)"
+        - name: WORKSPACE_AUTH_BOUND
+          value: $(workspaces.auth.bound)
+        - name: WORKSPACE_AUTH_PATH
+          value: $(workspaces.auth.path)
       script: |
         #!/bin/bash
 
         echo "Hello there!" >> "$(workspaces.source.path)/source/hello.txt"
         echo "PipelineRun name: $PIPELINERUN_NAME" >> "$(workspaces.source.path)/source/hello.txt"
-  
+
+        if [[ "$WORKSPACE_AUTH_BOUND" = true ]]; then
+          ls -a "$WORKSPACE_AUTH_PATH"
+        fi
+
   workspaces:
     - name: source
       description: Workspace with the source code (at subpath /source)
+    - name: auth
+      description: Workspace with some kind of authentication credentials. Optional.
+      optional: true

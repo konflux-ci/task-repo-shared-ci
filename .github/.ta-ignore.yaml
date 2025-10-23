@@ -1,2 +1,4 @@
 paths:
   - task/check-kustomize-build-workflow*
+workspaces:
+  - auth
