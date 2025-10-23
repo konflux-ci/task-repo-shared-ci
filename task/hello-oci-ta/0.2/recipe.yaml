@@ -1,0 +1,10 @@
+---
+base: ../../hello/0.2/hello.yaml
+add:
+  - use-source
+  - create-source
+preferStepTemplate: true
+removeWorkspaces:
+  - source
+replacements:
+  workspaces.source.path: /var/workdir
