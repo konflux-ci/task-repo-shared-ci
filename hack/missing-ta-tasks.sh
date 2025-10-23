@@ -12,9 +12,6 @@ shopt -s globstar
 
 git_root=$(git rev-parse --show-toplevel)
 
-tmp_files=()
-trap 'rm "${tmp_files[@]}" > /dev/null 2>&1' EXIT
-
 emit() {
   kind="$1"
   file="$2"
@@ -53,13 +50,7 @@ emit() {
       fi
       task_file="${task}"
       case "${task}" in
-          */kustomization.yaml)
-              tmp=$(mktemp)
-              tmp_files+=("${tmp}")
-              kustomize build "${task%/kustomization.yaml}" > "${tmp}"
-              task_file="${tmp}"
-              ;;
-          */recipe.yaml | */patch.yaml)
+          */kustomization.yaml | */recipe.yaml | */patch.yaml)
               continue
               ;;
       esac
