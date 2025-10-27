@@ -318,13 +318,21 @@ You can also trigger it manually from the Actions tab of your repo.
 > the chance of merge conflicts. See [Conflicts with Renovate](#conflicts-with-renovate)
 > for the solution.
 
-#### Required secrets
+#### Updater requirements
 
-- `SHARED_CI_UPDATER_APP_ID` - the ID of the updater GitHub app
-- `SHARED_CI_UPDATER_PRIVATE_KEY` - the private key for the updater GitHub app
+- Install your organization's updater GitHub app in your repository. If the app
+  doesn't exist yet, an administrator can follow the [instructions](#set-up-the-github-app)
+  to create it.
+- In the repository settings (`Secrets and variables` > `Actions`), add the required
+  secrets. Ask an administrator to provide their values:
+  - `SHARED_CI_UPDATER_APP_ID` - the ID of the updater GitHub app
+  - `SHARED_CI_UPDATER_PRIVATE_KEY` - plaintext content of the private key
+    for the updater GitHub app
 
-These may already be set globally for your organization. If not, see the instructions
-below.
+> [!NOTE]
+> It may be tempting to make the secrets organization-wide, to avoid having to set
+> them individually for each repo. But consider the security implications - more
+> repos with access to the secrets means more chances for an attacker to steal them.
 
 #### Updater GitHub app
 
@@ -353,16 +361,9 @@ to avoid those restrictions.
         - Contents: `Read and write`
         - Pull requests: `Read and write`
         - Workflows: `Read and write`
-
-##### Set the required secrets
-
-1. On the app's settings page, copy the App ID number and generate a private key
-2. Go to your organization settings (to set the secrets org-wide)
-   or your repository settings
-3. Go to `Secrets and variables` > `Actions`
-4. Create the secrets
-   - `SHARED_CI_UPDATER_APP_ID`: the App ID number
-   - `SHARED_CI_UPDATER_PRIVATE_KEY`: plaintext content of the private key
+5. On the app's settings page, copy the App ID number and generate a private key.
+   Store the private key somewhere safe. Each repo that wants to use the updater
+   will need this key.
 
 #### Conflicts with Renovate
 
