@@ -328,6 +328,10 @@ You can also trigger it manually from the Actions tab of your repo.
   - `SHARED_CI_UPDATER_APP_ID` - the ID of the updater GitHub app
   - `SHARED_CI_UPDATER_PRIVATE_KEY` - plaintext content of the private key
     for the updater GitHub app
+- Add a branch protection rule for the main branch in the repository. Enable the
+  `Require a pull request before merging` setting with at least 1 required approval.
+  This is not strictly required, but helps reduce the potential consequences if the
+  GitHub app secrets were leaked.
 
 > [!NOTE]
 > It may be tempting to make the secrets organization-wide, to avoid having to set
