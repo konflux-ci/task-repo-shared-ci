@@ -56,6 +56,9 @@ Process:
    git commit
    ```
 
+Optional, but recommended: to receive periodic updates for the shared CI, set up
+the [Shared CI Updater requirements](./SHARED-CI.md#updater-requirements).
+
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
