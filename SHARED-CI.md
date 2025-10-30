@@ -63,7 +63,6 @@ task                                    👈 all tasks go here
 │   │       └── pre-apply-task-hook.sh  👈 Optional hook
 │   └── 0.2
 │       ├── hello.yaml
-│       ├── MIGRATION.md                👈 migration notes for this version
 │       ├── migrations
 │       │   └── 0.2.sh                  👈 script for migrating to 0.2
 │       └── README.md
@@ -93,34 +92,45 @@ It does so by running ShellCheck. For more details, see the [checkton project](h
 - script: [`hack/validate-migration.sh`](hack/validate-migration.sh)
   - Validates migration scripts.
 - workflow: [`.github/workflows/check-task-migration.yaml`](.github/workflows/check-task-migration.yaml)
-  - Validates migration scripts and ensures MIGRATION.md is provided.
+  - Validates migration scripts.
 
 Task migrations allow task maintainers to introduce changes to Konflux standard
 pipelines according to the task updates. By creating migrations, task
 maintainers are able to add/remove/update task parameters, change task
 execution order, add/remove mandatory task to/from pipelines, etc.
 
-Historically, task maintainers write `MIGRATION.md` to notify users what changes
-have to be made to the pipeline. This mechanism is not deprecated. Besides
-writing the document, it is also recommended to write a migration script so that the
-updates can be applied to user pipelines automatically, that is done by the
+Task maintainers record task changes in `CHANGELOG.md`. If there is any
+pipeline changes accordingly, it is also recommended to create a task migration
+in order to be applied to user pipelines automatically, that is done by the
 [pipeline-migration-tool](https://github.com/konflux-ci/pipeline-migration-tool).
 
-Task migrations are Bash scripts defined in version-specific task
-directories. In general, a migration consists of a series of `yq` commands that
-modify pipeline in order to work with the new version of task. Developers can
-do more with task migrations on the pipelines, e.g. add/remove a task,
-add/remove/update task parameters, change execution order of a task, etc.
+Task migrations are Bash scripts defined in task directories. In general, a
+migration consists of a series of `yq` commands that modify pipeline in order
+to work with the new version of task. Developers can do more with task
+migrations on the pipelines, e.g. add/remove a task, add/remove/update task
+parameters, change execution order of a task, etc.
 
 #### Create a migration
 
 The following is the steps to write a migration:
 
 - Bump task version. Modify label `app.kubernetes.io/version` in the task YAML file.
-- Ensure `migrations/` directory exists in the version-specific task directory.
+- Ensure `migrations/` directory exists in the task directory alongside the
+  task YAML file.
 - Create a migration file under the `migrations/` directory. Its name is in
   form `<new task version>.sh`. Note that the version must match the bumped
   version.
+
+For example, to create a migration for task `hello`, migration file should be
+present like this:
+
+```
+task
+└── hello
+    ├── hello.yaml
+    └── migrations
+        └── 0.2.sh
+```
 
 The migration file is a normal Bash script file:
 
@@ -167,7 +177,7 @@ EOF
 
 To add a new task to the user pipelines, a migration can be created with a
 fictional task update. That is to select a task, bump its version
-and create a migration under its version-specific directory.
+and create a migration under the task directory.
 
 #### Create a startup migration by the helper script
 
