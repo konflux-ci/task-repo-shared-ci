@@ -54,9 +54,10 @@ Putting it all together, the structure is as follows:
 ```text
 task                                    👈 all tasks go here
 ├── hello                               👈 the name of a task
+│   ├── CHANGELOG.md                    👈 the changelog for this task (required)
 │   ├── 0.1                             👈 a specific version of the task
 │   │   ├── hello.yaml                  👈 ${task_name}.yaml
-│   │   └── README.md
+│   │   ├── README.md
 │   │   └── tests                       👈 Test directory
 │   │       ├── test-hello.yaml         👈 Test - A Pipeline named test-*.yaml
 │   │       ├── test-hello-2.yaml       👈 Test case 2
@@ -67,6 +68,7 @@ task                                    👈 all tasks go here
 │       │   └── 0.2.sh                  👈 script for migrating to 0.2
 │       └── README.md
 └── hello-oci-ta                        👈 ${task_name}-oci-ta for Trusted Artifacts
+    ├── CHANGELOG.md
     └── 0.1
         ├── hello-oci-ta.yaml
         ├── README.md
@@ -489,6 +491,69 @@ Using `$(params.*)` directly in a script creates a security flaw. Tekton perform
 
 For more details and guidance on fixing the issue, see the [Tekton recommendations](https://github.com/tektoncd/catalog/blob/main/recommendations.md#dont-use-interpolation-in-scripts-or-string-arguments)
 
+### Versioning
+
+- script: [`hack/versioning.py`](hack/versioning.py)
+  - The `check` subcommand checks versioning requirements for new and modified Tasks
+  - The `new-changelog` subcommand creates basic `CHANGELOG.md`s for the specified Tasks
+- workflow: [`.github/workflows/versioning.yaml`](.github/workflows/versioning.yaml)
+  - Runs the `check` subcommand for PRs
+
+#### Versioning requirements
+
+1. Tasks must have the `app.kubernetes.io/version` label
+
+    ```yaml
+    metadata:
+      labels:
+        app.kubernetes.io/version: "0.1.0"
+    ```
+
+    1. The version label must be in the form `x.y` or `x.y.z`, where `x y z` are integers
+
+2. Tasks must have a CHANGELOG.md at `task/${task_name}/CHANGELOG.md`.
+   For details about the format, see [ADR 54: CHANGELOG.md format].
+3. When modifying existing Tasks:
+    1. If you want the change to get released, update the version label.
+       Otherwise, CI may skip building the Task.
+    2. If the change is relevant to users, update the CHANGELOG.md.
+       If you're not updating the version label, update the `Unreleased` section.
+
+Check versioning requirements for the files that got modified/added between the
+base revision (defaults to `main`) and your current HEAD:
+
+```bash
+hack/versioning.py check
+```
+
+> [!NOTE]
+> When processing existing Tasks, the script treats most violations as warnings,
+> not errors. Some of the requirements are new, so the check aims to inform about
+> them but not to block PRs from getting merged.
+>
+> Requirements 3.1. and 3.2. are always only warnings. The goal is to remind the
+> contributor how versioning is done but leave the freedom to make changes without
+> releasing them right away.
+
+#### Adding `CHANGELOG.md`s
+
+Add CHANGELOG.md for a single Task:
+
+```bash
+hack/versioning.py new-changelog task/hello/
+```
+
+Add CHANGELOG.md for all Tasks that don't have one:
+
+```bash
+hack/versioning.py new-changelog task/
+```
+
+> [!NOTE]
+> The script makes no attempt to retroactively document the changes in each Task version.
+> The script simply marks the current version as the one that started tracking changes
+> in CHANGELOG.md. If the highest found version is `<=0.1.0`, it instead marks this
+> as the initial version of the Task.
 
 [task-repo-shared-ci]: https://github.com/konflux-ci/task-repo-shared-ci
 [onboarding process]: https://github.com/konflux-ci/task-repo-shared-ci?tab=readme-ov-file#-onboarding
@@ -500,3 +565,4 @@ For more details and guidance on fixing the issue, see the [Tekton recommendatio
 [tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
 [Renovate]: https://docs.renovatebot.com/
 [renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
+[ADR 54: CHANGELOG.md format]: https://github.com/konflux-ci/architecture/blob/main/ADR/0054-task-versioning.md#changelogmd-format
