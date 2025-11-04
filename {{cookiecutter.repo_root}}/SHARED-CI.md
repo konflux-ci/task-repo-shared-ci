@@ -82,7 +82,7 @@ task                                    👈 all tasks go here
 - workflow: [`.github/workflows/checkton.yaml`](.github/workflows/checkton.yaml)
   - Runs ShellCheck on scripts embedded in YAML files.
 
-Checkton is used to lint shell scripts embedded in YAML files (primarily Tekton files). 
+Checkton is used to lint shell scripts embedded in YAML files (primarily Tekton files).
 It does so by running ShellCheck. For more details, see the [checkton project](https://github.com/chmeliik/checkton)
 
 ### Task migration
@@ -246,7 +246,6 @@ is the workflow:
 
 The migration will be applied during next Renovate run scheduled by MintMaker.
 
-
 ### Kustomize Build
 
 - script: [`hack/build-manifests.sh`](hack/build-manifests.sh)
@@ -256,7 +255,7 @@ The migration will be applied during next Renovate run scheduled by MintMaker.
 
 With Kustomize, Task manifests are generated and kept consistent across the
 repository by composing base definitions (kustomize.yaml) with patches (patch.yaml).
-This ensures that all Task YAML manifests are reproducible and remain in sync 
+This ensures that all Task YAML manifests are reproducible and remain in sync
 with their source definitions.
 
 When authoring or modifying a Task, contributors should update the corresponding
@@ -440,14 +439,13 @@ In some cases, your Task may require certain Kubernetes resources, like **Secret
 
 To handle this, you can create an optional shell script named `pre-apply-task-hook.sh` and place it inside the `tests` directory.
 
-If this script exists, the test runner will execute it **after creating the test namespace but before applying the task**. 
+If this script exists, the test runner will execute it **after creating the test namespace but before applying the task**.
 This allows the hook to dynamically modify the task's definition before it is applied. For example, to lower/remove resource requests and limits for a constrained test environment.
 
 The script receives two arguments:
 
 - `$1`: The path to a temporary copy of the task's YAML file.  
 - `$2`: The name of the temporary test namespace where the test will run.  
-
 
 <details>
 <summary><b>Click to see an example <code>pre-apply-task-hook.sh</code></b></summary>
@@ -476,6 +474,7 @@ echo '{"auths":{}}' | kubectl create secret generic dummy-secret \
 echo "Pre-requirements setup complete for namespace: $TEST_NS"
 
 ```
+
 </details>  
 
 ### Tekton Security Task Lint
