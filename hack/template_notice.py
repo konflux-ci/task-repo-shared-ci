@@ -14,7 +14,7 @@ NOTICE_COMMENT = [
     "See the SHARED-CI.md document in this repo for more details.",
 ]
 
-SupportedFiletype = Literal["sh", "yaml"]
+SupportedFiletype = Literal["sh", "py", "yaml"]
 
 
 class UnsupportedFiletype(ValueError):
@@ -23,7 +23,7 @@ class UnsupportedFiletype(ValueError):
 
 def _ensure_notice_comment(filepath: Path) -> None:
     suffix = filepath.suffix.removeprefix(".")
-    if suffix not in ("sh", "yaml"):
+    if suffix not in ("sh", "py", "yaml"):
         raise UnsupportedFiletype(suffix)
 
     filetype: SupportedFiletype = suffix
@@ -72,7 +72,7 @@ def _add_notice_comment(filetype: SupportedFiletype, lines: list[str]) -> list[s
     insert_at = None
 
     match filetype:
-        case "sh":
+        case "sh" | "py":
             first_empty = _first_index(lambda line: not line, lines)
             if first_empty is not None:
                 insert_at = first_empty + 1
