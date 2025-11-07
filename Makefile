@@ -1,6 +1,14 @@
 PYTHON_VERSION = ""
 PYTHON = python$(PYTHON_VERSION)
 
+.PHONY: selfupdate
+selfupdate:
+	hack/selfupdate.sh
+
+.PHONY: fix-template-comments
+fix-template-comments:
+	hack/template_notice.py fix
+
 .PHONY: venv
 venv:
 	if command -v uv; then \
