@@ -17,6 +17,13 @@ from textwrap import dedent
 
 import pytest
 
+
+@pytest.fixture(autouse=True)
+def disable_github_actions(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Disable GitHub Actions mode for all tests by default."""
+    monkeypatch.setenv("GITHUB_ACTIONS", "false")
+
+
 # --- Declarative file tree helpers ---
 
 
