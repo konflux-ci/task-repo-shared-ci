@@ -47,6 +47,8 @@
       directly in this repo
     * Provide an example of the repository structure that the workflows and scripts
       expect
+* [`tests/`](tests/)
+  * Tests for the scripts in `hack/`
 
 ## Typical development workflow
 
@@ -54,8 +56,30 @@
 2. Run `hack/template_notice.py fix` to add the `# <TEMPLATED FILE!>` comments
 3. Run `hack/selfupdate.sh` to copy the changes to the repo root
 4. Edit/add some files in the `task/` directory to test your changes
-5. Open a PR
-6. Get it reviewed and merged 🎉
+5. If possible, add automated tests for your changes
+6. Open a PR
+7. Get it reviewed and merged 🎉
+
+## Testing
+
+Set up Python virtualenv for tests written in Python:
+
+```bash
+# Python scripts should support python>=3.11, test with 3.11
+make PYTHON_VERSION=3.11 venv
+```
+
+* If you don't have Python 3.11 installed, testing with your current python should be fine
+
+  ```bash
+  make venv
+  ```
+
+Run tests:
+
+```bash
+make test
+```
 
 [Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable/
 [cruft]: https://cruft.github.io/cruft
