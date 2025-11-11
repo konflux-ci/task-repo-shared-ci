@@ -43,7 +43,7 @@ spec:
         echo "PipelineRun name: $PIPELINERUN_NAME" >> "$(workspaces.source.path)/source/hello.txt"
 
         if [[ "$WORKSPACE_AUTH_BOUND" = true ]]; then
-          ls -a "$WORKSPACE_AUTH_PATH"
+          ls -a "$WORKSPACE_AUTH_PATH" >> "$(workspaces.source.path)/source/hello.txt"
         fi
 
   workspaces:
