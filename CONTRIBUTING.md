@@ -32,7 +32,8 @@
 * [`.github/workflows/check-generated-content.yaml`](.github/workflows/check-generated-content.yaml)
   * A workflow specific to this repo, not included in the Cookiecutter template
   * Uses [`hack/template_notice.py`](hack/template_notice.py) to verify that all
-    the files in `{{cookiecutter.repo_root}}/` have a `# <TEMPLATED FILE!>` comment
+    the files in `{{cookiecutter.repo_root}}/` have a `# <TEMPLATED FILE!>` comment.
+    For YAML files, also adds the `# yamllint disable-file` comment (see [yamllint](#yamllint)).
   * Uses [`hack/selfupdate.sh`](hack/selfupdate.sh) to verify that all the files
     in `{{cookiecutter.repo_root}}/` are copied to the actual repo root
 * [`hack/`](hack/)
@@ -81,5 +82,16 @@ Run tests:
 make test
 ```
 
+## yamllint
+
+The users of the Shared CI setup may have their own [yamllint configuration]. To avoid
+causing linter errors due to clashes between our YAML style and the users' configured
+YAML style, all shared YAML files must start with the `# yamllint disable-file` directive.
+Running `hack/template_notice.py fix` adds the directive automatically.
+
+But we still want to maintain a consistent YAML style within this repo. Use `hack/yamllint.sh`
+to execute `yamllint` while ignoring the disable-file directives for shared CI files.
+
 [Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable/
 [cruft]: https://cruft.github.io/cruft
+[yamllint configuration]: https://yamllint.readthedocs.io/en/stable/configuration.html
