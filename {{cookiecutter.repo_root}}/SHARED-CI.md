@@ -339,6 +339,8 @@ You can also trigger it manually from the Actions tab of your repo.
 - Install your organization's updater GitHub app in your repository. If the app
   doesn't exist yet, an administrator can follow the [instructions](#set-up-the-github-app)
   to create it.
+  - If your repository is in <https://github.com/konflux-ci>, use the [konflux-ci-shared-ci-updater]
+    app. The [build-maintainers] team can provide the values for the secrets below.
 - In the repository settings (`Secrets and variables` > `Actions`), add the required
   secrets. Ask an administrator to provide their values:
   - `SHARED_CI_UPDATER_APP_ID` - the ID of the updater GitHub app
@@ -572,3 +574,5 @@ hack/versioning.py new-changelog task/
 [renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
 [ADR 54: CHANGELOG.md format]: https://github.com/konflux-ci/architecture/blob/main/ADR/0054-task-versioning.md#changelogmd-format
 [To modify Konflux pipelines with modify]: https://github.com/konflux-ci/pipeline-migration-tool?tab=readme-ov-file#to-modify-konflux-pipelines-with-modify
+[konflux-ci-shared-ci-updater]: https://github.com/apps/konflux-ci-shared-ci-updater
+[build-maintainers]: https://github.com/orgs/konflux-ci/teams/build-maintainers
