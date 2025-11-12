@@ -69,7 +69,7 @@ spec:
         echo "PipelineRun name: $PIPELINERUN_NAME" >>"/var/workdir/source/hello.txt"
 
         if [[ "$WORKSPACE_AUTH_BOUND" = true ]]; then
-          ls -a "$WORKSPACE_AUTH_PATH"
+          ls -a "$WORKSPACE_AUTH_PATH" >>"/var/workdir/source/hello.txt"
         fi
       computeResources:
         limits:
