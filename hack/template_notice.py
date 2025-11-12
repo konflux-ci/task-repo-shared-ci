@@ -83,7 +83,16 @@ def _add_notice_comment(filetype: SupportedFiletype, lines: list[str]) -> list[s
                 else:
                     insert_at = 0
         case "yaml":
-            insert_at = _first_index(lambda line: line != "---", lines)
+            insert_at = 0
+            if lines[0] != "# yamllint disable-file":
+                comment_lines = ["# yamllint disable-file", ""] + comment_lines
+            elif len(lines) < 2 or lines[1] != "":
+                # yamllint comment is already there, add empty line
+                comment_lines.insert(0, "")
+                insert_at = 1
+            else:
+                # yamllint comment and empty line are both already there
+                insert_at = 2
         case _:
             assert_never(filetype)
 
