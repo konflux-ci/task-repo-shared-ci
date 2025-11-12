@@ -1,0 +1,14 @@
+---
+name: yamllint
+"on":
+  pull_request:
+    branches: [main]
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Lint YAML files
+        run: |
+          # --strict: exit with non-zero even for warnings
+          hack/yamllint.sh --strict .

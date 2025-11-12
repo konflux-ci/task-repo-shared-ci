@@ -1,0 +1,15 @@
+---
+# https://yamllint.readthedocs.io/en/stable/configuration.html
+
+extends: default
+
+rules:
+  comments:
+    # Allow 1 space for Renovate's GitHub Action version comments
+    min-spaces-from-content: 1
+  document-start: disable
+  line-length: disable
+  indentation:
+    ignore:
+      # kustomize output doesn't use the indentation style we want
+      - task/check-kustomize-build-workflow-modified
