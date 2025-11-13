@@ -282,7 +282,7 @@ Use [`hack/build-manifests.sh`](hack/build-manifests.sh) to regenerate the manif
 With Trusted Artifacts (TA), Tasks share files via the use of archives stored in
 an image repository and not using attached storage (PersistentVolumeClaims). This
 has performance and usability benefits. For more details, see
-[ADR36](https://konflux-ci.dev/architecture/ADR/0036-trusted-artifacts.html).
+[ADR36](https://konflux-ci.dev/architecture/ADR/0036-trusted-artifacts).
 
 When authoring a Task that needs to share or use files from another Task, the
 task author can opt to include the Trusted Artifact variant, by convention in
