@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Integration tests for hack/versioning.py.
 
 Typically, each test works like this:
