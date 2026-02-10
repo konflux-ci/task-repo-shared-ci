@@ -400,6 +400,8 @@ class TestNewChangelogCommand:
             """\
             # Changelog
 
+            <!-- Format guidelines: https://keepachangelog.com/en/1.1.0/#how -->
+
             ## Unreleased
 
             <!--
@@ -441,6 +443,8 @@ class TestNewChangelogCommand:
         assert changelog_path.read_text() == dedent(
             """\
             # Changelog
+
+            <!-- Format guidelines: https://keepachangelog.com/en/1.1.0/#how -->
 
             ## Unreleased
 
@@ -510,6 +514,8 @@ class TestNewChangelogCommand:
         assert changelog_path.read_text() == dedent(
             """\
             # Changelog
+
+            <!-- Format guidelines: https://keepachangelog.com/en/1.1.0/#how -->
 
             ## Unreleased
 
