@@ -41,19 +41,33 @@ as you make more local changes you increase the chance of merge conflicts.
 
 ## 🌲 Expected repository structure
 
-The shared scripts and workflows expect this repository to follow the
-[Tekton Catalog structure][tekton-catalog-structure].
+The shared scripts and workflows expect tasks to be organized under the `task/` directory.
+The task YAML file must be named `${task_name}.yaml` and placed under `task/${task_name}/`.
 
 They also introduce new elements and conventions, such as the `${task_name}-oci-ta`
 directories for [Trusted Artifacts](#trusted-artifacts) tasks.
 
 For details on how the `tests` directory is used, see [Task Integration Tests](#task-integration-tests).
 
-Putting it all together, the structure is as follows:
+### Flexible directory structure
+
+Task files can be placed at any nesting level within the task directory:
+
+```text
+task/${task_name}/${task_name}.yaml                   👈 flat (no version subdirectory)
+task/${task_name}/${version}/${task_name}.yaml        👈 traditional with version subdir
+task/${task_name}/**/${task_name}.yaml                👈 arbitrarily nested
+```
+
+> [!NOTE]
+> The task version is determined by the `app.kubernetes.io/version` label in the task YAML,
+> not by the directory structure.
+
+### Example structure
 
 ```text
 task                                    👈 all tasks go here
-├── hello                               👈 the name of a task
+├── hello                               👈 traditional structure with version subdirs
 │   ├── CHANGELOG.md                    👈 the changelog for this task (required)
 │   ├── 0.1                             👈 a specific version of the task
 │   │   ├── hello.yaml                  👈 ${task_name}.yaml
@@ -67,12 +81,30 @@ task                                    👈 all tasks go here
 │       ├── migrations
 │       │   └── 0.2.sh                  👈 script for migrating to 0.2
 │       └── README.md
-└── hello-oci-ta                        👈 ${task_name}-oci-ta for Trusted Artifacts
+├── goodbye                             👈 flat structure (no version subdir)
+│   ├── CHANGELOG.md
+│   ├── goodbye.yaml                    👈 task YAML directly in task dir
+│   └── tests
+│       └── test-goodbye.yaml
+├── greet                               👈 nested structure
+│   ├── CHANGELOG.md
+│   └── subdir
+│       └── deep
+│           ├── greet.yaml              👈 task YAML in nested subdir
+│           └── tests
+│               └── test-greet.yaml
+├── hello-oci-ta                        👈 ${task_name}-oci-ta for Trusted Artifacts
+│   ├── CHANGELOG.md
+│   └── 0.1
+│       ├── hello-oci-ta.yaml
+│       ├── README.md
+│       └── recipe.yaml                 👈 triggers auto-generation of the task yaml
+└── greet-oci-ta                        👈 TA variant mirrors base task structure
     ├── CHANGELOG.md
-    └── 0.1
-        ├── hello-oci-ta.yaml
-        ├── README.md
-        └── recipe.yaml                 👈 triggers auto-generation of the task yaml
+    └── subdir
+        └── deep
+            ├── greet-oci-ta.yaml
+            └── recipe.yaml
 ```
 
 ## ☑️ CI workflows
