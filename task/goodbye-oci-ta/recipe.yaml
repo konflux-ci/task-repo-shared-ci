@@ -1,0 +1,10 @@
+---
+base: ../goodbye/goodbye.yaml
+add:
+  - use-source
+  - create-source
+preferStepTemplate: true
+removeWorkspaces:
+  - source
+replacements:
+  workspaces.source.path: /var/workdir
