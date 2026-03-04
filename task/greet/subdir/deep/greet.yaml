@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: greet
+  annotations:
+    tekton.dev/tags: "konflux"
+  labels:
+    app.kubernetes.io/version: "1.0.0"
+spec:
+  description: |-
+    Example task with deeply nested directory structure.
+
+    This task demonstrates the flexible directory structure where tasks
+    can be placed at arbitrary nesting levels under task/${task_name}/.
+
+  steps:
+    - name: greet
+      image: registry.access.redhat.com/ubi9/ubi-micro:9.6@sha256:f5c5213d2969b7b11a6666fc4b849d56b48d9d7979b60a37bb853dff0255c14b
+      computeResources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 256Mi
+      script: |
+        #!/bin/bash
+        echo "Greetings from a deeply nested task!"

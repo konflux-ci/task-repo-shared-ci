@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: test-goodbye
+spec:
+  workspaces:
+    - name: tests-workspace
+      description: The workspace provided by the test runner script.
+  tasks:
+    - name: run-goodbye-task
+      taskRef:
+        name: goodbye
+
+    - name: verify-task-ran
+      runAfter:
+        - run-goodbye-task
+      taskSpec:
+        steps:
+          - name: check-success
+            image: registry.access.redhat.com/ubi9/ubi-minimal:9.6
+            script: |
+              #!/bin/bash
+              set -e
+              echo "Goodbye task completed successfully!"
