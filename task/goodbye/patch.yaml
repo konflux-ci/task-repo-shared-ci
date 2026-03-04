@@ -1,0 +1,7 @@
+- op: replace
+  path: /spec/description
+  value: |-
+    Example task without version subdirectory (kustomize-generated).
+
+    This task demonstrates the flexible directory structure where tasks
+    can be placed directly under task/${task_name}/ without a version folder.

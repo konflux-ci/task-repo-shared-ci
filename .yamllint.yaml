@@ -13,3 +13,4 @@ rules:
     ignore:
       # kustomize output doesn't use the indentation style we want
       - task/check-kustomize-build-workflow-modified
+      - task/goodbye

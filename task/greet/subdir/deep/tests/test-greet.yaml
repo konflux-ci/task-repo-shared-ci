@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: test-greet
+spec:
+  workspaces:
+    - name: tests-workspace
+      description: The workspace provided by the test runner script.
+  tasks:
+    - name: run-greet-task
+      taskRef:
+        name: greet
+      workspaces:
+        - name: source
+          workspace: tests-workspace
+
+    - name: verify-task-ran
+      runAfter:
+        - run-greet-task
+      workspaces:
+        - name: source
+          workspace: tests-workspace
+      taskSpec:
+        workspaces:
+          - name: source
+        steps:
+          - name: check-success
+            image: registry.access.redhat.com/ubi9/ubi-minimal:9.6
+            script: |
+              #!/bin/bash
+              set -e
+              test -f "$(workspaces.source.path)/greet.txt"
+              echo "Greet task completed successfully!"

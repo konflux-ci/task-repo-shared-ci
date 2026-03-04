@@ -1,0 +1,30 @@
+# WARNING: This is an auto generated file, do not modify this file directly
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  annotations:
+    tekton.dev/tags: konflux
+  labels:
+    app.kubernetes.io/version: 0.1.0
+  name: goodbye
+spec:
+  description: |-
+    Example task without version subdirectory (kustomize-generated).
+
+    This task demonstrates the flexible directory structure where tasks
+    can be placed directly under task/${task_name}/ without a version folder.
+  steps:
+  - computeResources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    image: registry.access.redhat.com/ubi9/ubi-micro:9.6@sha256:f5c5213d2969b7b11a6666fc4b849d56b48d9d7979b60a37bb853dff0255c14b
+    name: goodbye
+    script: |
+      #!/bin/bash
+      echo "Goodbye!" >> "$(workspaces.source.path)/goodbye.txt"
+  workspaces:
+  - description: Workspace with the source code (at subpath /source)
+    name: source
