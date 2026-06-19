@@ -350,6 +350,8 @@ check_apply_in_real_cluster() {
 check_oci_ta_migration() {
     local migration_file=$1
     local oci_migration_file
+    local task_path=${migration_file#task/}
+    local task_name=${task_path%%/*}
 
     # Add suffix oci-ta to task name
     oci_migration_file=$(sed -E 's|task/([^/]+)(.+)|task/\1-oci-ta\2|' <<<"$migration_file")
