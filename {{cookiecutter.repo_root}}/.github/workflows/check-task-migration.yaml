@@ -25,7 +25,7 @@ jobs:
           cluster_name: kind
       - uses: tektoncd/actions/setup-tektoncd@main
         with:
-          pipeline_version: latest
+          pipeline_version: v1.14.0
       - name: Run check
         run: |
           DEBIAN_FRONTEND=noninteractive \
