@@ -68,7 +68,6 @@ jobs:
         with:
           repository: 'konflux-ci/konflux-ci'
           path: konflux-ci
-          # Pin must include scripts/deploy-local.sh support for OPERATOR_RELEASE.
           ref: d510887fc3f38a8f8f4f4d5540f5b7199d4c7f67
 
       - name: Create k8s Kind Cluster
