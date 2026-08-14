@@ -325,6 +325,21 @@ directory, define a [`recipe.yaml`][recipe.yaml] inside the directory and genera
 the TA variant using the [`hack/generate-ta-tasks.sh`](hack/generate-ta-tasks.sh)
 script. See the [trusted-artifacts generator] README for more details.
 
+The generate script also copies the migration for the **current task version**
+(`migrations/<version>.sh`, matching the `app.kubernetes.io/version` label) from
+the base task into the TA task when that file is missing.
+
+If the TA task already has that migration file, it is overwritten only when the
+**base** migration contains:
+
+```bash
+# generate-ta-tasks: sync-oci-ta-migration=true
+```
+
+`hack/create-task-migration.sh` adds this marker (set to `true`) to new migration
+scripts by default. Set it to `false` (or remove it) when the TA migration should
+intentionally differ and must not be overwritten.
+
 #### Ignore missing Trusted Artifacts tasks
 
 The `missing-ta-tasks` script supports an ignore file located at one of these paths
