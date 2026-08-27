@@ -389,7 +389,8 @@ You can also trigger it manually from the Actions tab of your repo.
     app. The [build-maintainers] team can provide the values for the secrets below.
 - In the repository settings (`Secrets and variables` > `Actions`), add the required
   secrets. Ask an administrator to provide their values:
-  - `SHARED_CI_UPDATER_APP_ID` - the ID of the updater GitHub app
+  - `SHARED_CI_UPDATER_APP_ID` - the ID of the updater GitHub app, DEPRECATED, use `SHARED_CI_UPDATER_CLIENT_ID` instead.
+  - `SHARED_CI_UPDATER_CLIENT_ID` - client ID of the updater GitHub app (replaces deprecated `SHARED_CI_UPDATER_APP_ID`)  
   - `SHARED_CI_UPDATER_PRIVATE_KEY` - plaintext content of the private key
     for the updater GitHub app
 - Add a branch protection rule for the main branch in the repository. Enable the
