@@ -3,6 +3,9 @@
 
 extends: default
 
+ignore: |
+  task-generator/
+
 rules:
   comments:
     # Allow 1 space for Renovate's GitHub Action version comments
