@@ -14,7 +14,7 @@ This tool is used by the `hack/generate-ta-tasks.sh` script.
 The tool uses only one argument - path to the `recipe.yaml` file.
 These `recipe.yaml` files are stored in the task directories ending with `-oci-ta`.
 
-Usage (from the `task-generator/trusted-artifacts` directory)
+Usage (from the `ta-generator` directory)
 ```
 go run . path/to/recipe.yaml
 ```
