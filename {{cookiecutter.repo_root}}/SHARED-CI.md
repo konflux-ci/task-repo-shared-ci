@@ -615,7 +615,6 @@ hack/versioning.py new-changelog task/
 [recipe.yaml]: https://github.com/konflux-ci/task-repo-shared-ci/tree/main/ta-generator#configuration-in-recipeyaml
 [ta-generator]: https://github.com/konflux-ci/task-repo-shared-ci/tree/main/ta-generator
 [GITHUB_TOKEN]: https://docs.github.com/en/actions/concepts/security/github_token
-[tekton-catalog-structure]: https://github.com/tektoncd/catalog?tab=readme-ov-file#catalog-structure
 [Renovate]: https://docs.renovatebot.com/
 [renovate-ignorepaths]: https://docs.renovatebot.com/configuration-options/#ignorepaths
 [ADR 54: CHANGELOG.md format]: https://github.com/konflux-ci/architecture/blob/main/ADR/0054-task-versioning.md#changelogmd-format
