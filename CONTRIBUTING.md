@@ -48,6 +48,9 @@
       directly in this repo
     * Provide an example of the repository structure that the workflows and scripts
       expect
+* [`ta-generator/`](ta-generator/)
+  * Go tool that generates Trusted Artifacts (TA) task variants from `recipe.yaml`
+  * Invoked by the [`hack/generate-ta-tasks.sh`](hack/generate-ta-tasks.sh) script
 * [`tests/`](tests/)
   * Tests for the scripts in `hack/`
 
@@ -81,6 +84,22 @@ Run tests:
 ```bash
 make test
 ```
+
+## Trusted Artifacts (TA) generator
+
+The developer workflow might be slightly unusual. The `hack/generate-ta-tasks.sh` script is shared
+with other repositories, but the generator itself is not. The script installs the generator from a
+Go module version, which corresponds to a git tag (on the main branch).
+
+Therefore, it's not possible to change the generator and bump the script's pinned version in the
+same pull request.
+
+The workflow is as follows:
+
+1. Open a pull request to update the generator code and [CHANGELOG.md](ta-generator/CHANGELOG.md).
+2. After the pull request is merged, a maintainer pushes a tag `ta-generator/vX.Y.Z`.
+3. Open a second pull request to bump the version in `hack/generate-ta-tasks.sh`.
+4. Merge the second pull request. 🎉
 
 ## yamllint
 
