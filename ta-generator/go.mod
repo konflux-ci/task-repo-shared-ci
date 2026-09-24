@@ -2,7 +2,7 @@ module github.com/konflux-ci/task-repo-shared-ci/ta-generator
 
 go 1.25.7
 
-toolchain go1.26.2
+toolchain go1.27.1
 
 require (
 	github.com/google/go-cmp v0.7.0
