@@ -13,7 +13,6 @@ name: Validate PR - Trusted Artifact variants
     types: [checks_requested]
 permissions:
   contents: read
-  actions: write
 jobs:
   go:
     name: Check Trusted Artifact variants
