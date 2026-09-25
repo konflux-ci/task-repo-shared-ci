@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"regexp"
 	"slices"
 	"strings"
@@ -280,11 +279,11 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		args := []string{"use"}
 
 		if recipe.useSource {
-			args = append(args, fmt.Sprintf("$(params.SOURCE_ARTIFACT)=/var/workdir/%s", "source"))
+			args = append(args, "$(params.SOURCE_ARTIFACT)=/var/workdir/source")
 		}
 
 		if recipe.usePrefetch {
-			args = append(args, fmt.Sprintf("$(params.CACHI2_ARTIFACT)=/var/workdir/%s", "cachi2"))
+			args = append(args, "$(params.CACHI2_ARTIFACT)=/var/workdir/cachi2")
 		}
 
 		task.Spec.Steps = append([]pipeline.Step{{
