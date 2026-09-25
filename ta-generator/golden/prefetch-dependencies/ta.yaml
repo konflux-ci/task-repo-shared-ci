@@ -46,7 +46,7 @@ spec:
       name: SOURCE_ARTIFACT
       type: string
     - description: The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.
-      name: CACHI2_ARTIFACT
+      name: PREFETCH_ARTIFACT
       type: string
   stepTemplate:
     volumeMounts:
@@ -63,11 +63,11 @@ spec:
     script: |
       if [ -z "${INPUT}" ]; then
         mkdir -p /var/workdir/source
-        mkdir -p /var/workdir/cachi2
+        mkdir -p /var/workdir/prefetch
         echo "true" > /var/workdir/source/.skip-trusted-artifacts
-        echo "true" > /var/workdir/cachi2/.skip-trusted-artifacts
+        echo "true" > /var/workdir/prefetch/.skip-trusted-artifacts
         echo -n "${SOURCE_ARTIFACT}" > $(results.SOURCE_ARTIFACT.path)
-        echo -n "" > $(results.CACHI2_ARTIFACT.path)
+        echo -n "" > $(results.PREFETCH_ARTIFACT.path)
       fi
     computeResources:
       limits:
@@ -173,7 +173,7 @@ spec:
       - --store
       - $(params.ociStorage)
       - $(results.SOURCE_ARTIFACT.path)=/var/workdir/source
-      - $(results.CACHI2_ARTIFACT.path)=/var/workdir/cachi2
+      - $(results.PREFETCH_ARTIFACT.path)=/var/workdir/prefetch
   workspaces:
   - name: git-basic-auth
     description: |

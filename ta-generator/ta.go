@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"regexp"
 	"slices"
 	"strings"
@@ -48,7 +47,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 	}
 
 	prefetchResult := pipeline.TaskResult{
-		Name:        "CACHI2_ARTIFACT",
+		Name:        "PREFETCH_ARTIFACT",
 		Description: "The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.",
 		Type:        pipeline.ResultsTypeString,
 	}
@@ -60,7 +59,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 	}
 
 	usePrefetchParam := pipeline.ParamSpec{
-		Name:        "CACHI2_ARTIFACT",
+		Name:        "PREFETCH_ARTIFACT",
 		Type:        pipeline.ParamTypeString,
 		Description: "The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.",
 		Default:     &pipeline.ParamValue{Type: pipeline.ParamTypeString, StringVal: ""},
@@ -91,34 +90,18 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 	}
 
 	task.Spec.Params = slices.DeleteFunc(task.Spec.Params, func(ps pipeline.ParamSpec) bool {
-		for _, rm := range recipe.RemoveParams {
-			if ps.Name == rm {
-				return true
-			}
-		}
-
-		return false
+		return slices.Contains(recipe.RemoveParams, ps.Name)
 	})
 
 	task.Spec.Workspaces = slices.DeleteFunc(task.Spec.Workspaces, func(wd pipeline.WorkspaceDeclaration) bool {
-		for _, rm := range recipe.RemoveWorkspaces {
-			if wd.Name == rm {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(recipe.RemoveWorkspaces, wd.Name)
 	})
 	if len(task.Spec.Workspaces) == 0 {
 		task.Spec.Workspaces = nil
 	}
 
 	task.Spec.Volumes = slices.DeleteFunc(task.Spec.Volumes, func(v core.Volume) bool {
-		for _, rm := range recipe.RemoveVolumes {
-			if v.Name == rm {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(recipe.RemoveVolumes, v.Name)
 	})
 
 	task.Spec.Params = append(task.Spec.Params, recipe.AddParams...)
@@ -211,19 +194,11 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 			task.Spec.StepTemplate = &pipeline.StepTemplate{}
 		}
 		task.Spec.StepTemplate.VolumeMounts = slices.DeleteFunc(task.Spec.StepTemplate.VolumeMounts, func(vm core.VolumeMount) bool {
-			for _, rm := range recipe.RemoveWorkspaces {
-				if vm.Name == rm {
-					return true
-				}
+			if slices.Contains(recipe.RemoveWorkspaces, vm.Name) {
+				return true
 			}
 
-			for _, rm := range recipe.RemoveVolumes {
-				if vm.Name == rm {
-					return true
-				}
-			}
-
-			return false
+			return slices.Contains(recipe.RemoveVolumes, vm.Name)
 		})
 
 		task.Spec.StepTemplate.VolumeMounts = append(task.Spec.StepTemplate.VolumeMounts, recipe.AddVolumeMount...)
@@ -256,13 +231,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		task.Spec.Steps[i].VolumeMounts = slices.DeleteFunc(task.Spec.Steps[i].VolumeMounts, func(vm core.VolumeMount) bool {
-			for _, rm := range recipe.RemoveVolumes {
-				if vm.Name == rm {
-					return true
-				}
-			}
-
-			return false
+			return slices.Contains(recipe.RemoveVolumes, vm.Name)
 		})
 
 		if len(task.Spec.Steps[i].VolumeMounts) == 0 {
@@ -310,11 +279,11 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		args := []string{"use"}
 
 		if recipe.useSource {
-			args = append(args, fmt.Sprintf("$(params.SOURCE_ARTIFACT)=/var/workdir/%s", "source"))
+			args = append(args, "$(params.SOURCE_ARTIFACT)=/var/workdir/source")
 		}
 
 		if recipe.usePrefetch {
-			args = append(args, fmt.Sprintf("$(params.CACHI2_ARTIFACT)=/var/workdir/%s", "cachi2"))
+			args = append(args, "$(params.PREFETCH_ARTIFACT)=/var/workdir/prefetch")
 		}
 
 		task.Spec.Steps = append([]pipeline.Step{{
@@ -336,7 +305,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		if recipe.createPrefetch {
-			args = append(args, "$(results.CACHI2_ARTIFACT.path)=/var/workdir/cachi2")
+			args = append(args, "$(results.PREFETCH_ARTIFACT.path)=/var/workdir/prefetch")
 		}
 
 		create := pipeline.Step{
