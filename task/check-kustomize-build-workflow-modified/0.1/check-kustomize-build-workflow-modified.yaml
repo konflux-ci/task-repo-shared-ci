@@ -26,6 +26,15 @@ spec:
       #!/bin/bash
 
       echo "Hello there!" >> "$(workspaces.source.path)/source/hello.txt"
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
   workspaces:
   - description: Workspace with the source code (at subpath /source)
     name: source
