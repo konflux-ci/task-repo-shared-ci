@@ -91,34 +91,18 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 	}
 
 	task.Spec.Params = slices.DeleteFunc(task.Spec.Params, func(ps pipeline.ParamSpec) bool {
-		for _, rm := range recipe.RemoveParams {
-			if ps.Name == rm {
-				return true
-			}
-		}
-
-		return false
+		return slices.Contains(recipe.RemoveParams, ps.Name)
 	})
 
 	task.Spec.Workspaces = slices.DeleteFunc(task.Spec.Workspaces, func(wd pipeline.WorkspaceDeclaration) bool {
-		for _, rm := range recipe.RemoveWorkspaces {
-			if wd.Name == rm {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(recipe.RemoveWorkspaces, wd.Name)
 	})
 	if len(task.Spec.Workspaces) == 0 {
 		task.Spec.Workspaces = nil
 	}
 
 	task.Spec.Volumes = slices.DeleteFunc(task.Spec.Volumes, func(v core.Volume) bool {
-		for _, rm := range recipe.RemoveVolumes {
-			if v.Name == rm {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(recipe.RemoveVolumes, v.Name)
 	})
 
 	task.Spec.Params = append(task.Spec.Params, recipe.AddParams...)
@@ -211,19 +195,11 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 			task.Spec.StepTemplate = &pipeline.StepTemplate{}
 		}
 		task.Spec.StepTemplate.VolumeMounts = slices.DeleteFunc(task.Spec.StepTemplate.VolumeMounts, func(vm core.VolumeMount) bool {
-			for _, rm := range recipe.RemoveWorkspaces {
-				if vm.Name == rm {
-					return true
-				}
+			if slices.Contains(recipe.RemoveWorkspaces, vm.Name) {
+				return true
 			}
 
-			for _, rm := range recipe.RemoveVolumes {
-				if vm.Name == rm {
-					return true
-				}
-			}
-
-			return false
+			return slices.Contains(recipe.RemoveVolumes, vm.Name)
 		})
 
 		task.Spec.StepTemplate.VolumeMounts = append(task.Spec.StepTemplate.VolumeMounts, recipe.AddVolumeMount...)
@@ -256,13 +232,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		task.Spec.Steps[i].VolumeMounts = slices.DeleteFunc(task.Spec.Steps[i].VolumeMounts, func(vm core.VolumeMount) bool {
-			for _, rm := range recipe.RemoveVolumes {
-				if vm.Name == rm {
-					return true
-				}
-			}
-
-			return false
+			return slices.Contains(recipe.RemoveVolumes, vm.Name)
 		})
 
 		if len(task.Spec.Steps[i].VolumeMounts) == 0 {
