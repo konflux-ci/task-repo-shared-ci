@@ -14,10 +14,13 @@ spec:
         steps:
           - name: create-source-dir
             image: registry.access.redhat.com/ubi9/ubi-minimal:9.6
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1001
             script: |
               #!/bin/bash
               set -e
-              mkdir -p $(workspaces.source.path)/source
+              mkdir -p "$(workspaces.source.path)/source"
               echo "Created source subdirectory."
       workspaces:
         - name: source

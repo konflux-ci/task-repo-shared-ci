@@ -25,6 +25,9 @@ spec:
       script: |
         #!/bin/bash
         echo "Goodbye!" >> "$(workspaces.source.path)/goodbye.txt"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
 
   workspaces:
     - name: source

@@ -56,6 +56,9 @@ spec:
         requests:
           cpu: 100m
           memory: 256Mi
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
     - name: create-trusted-artifact
       image: quay.io/konflux-ci/build-trusted-artifacts:latest@sha256:7263233979258cf8abd8a5fd968671c0f3c461f30e6041c5efc0bc25d9bc973d
       args:

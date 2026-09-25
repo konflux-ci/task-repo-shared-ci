@@ -26,6 +26,9 @@ spec:
         #!/bin/bash
 
         echo "Hello there!" >> "$(workspaces.source.path)/source/hello.txt"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
 
   workspaces:
     - name: source
