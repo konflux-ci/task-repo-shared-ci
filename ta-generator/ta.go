@@ -283,7 +283,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		if recipe.usePrefetch {
-			args = append(args, "$(params.PREFETCH_ARTIFACT)=/var/workdir/cachi2")
+			args = append(args, "$(params.PREFETCH_ARTIFACT)=/var/workdir/prefetch")
 		}
 
 		task.Spec.Steps = append([]pipeline.Step{{
@@ -305,7 +305,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		if recipe.createPrefetch {
-			args = append(args, "$(results.PREFETCH_ARTIFACT.path)=/var/workdir/cachi2")
+			args = append(args, "$(results.PREFETCH_ARTIFACT.path)=/var/workdir/prefetch")
 		}
 
 		create := pipeline.Step{
