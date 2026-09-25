@@ -23,7 +23,7 @@ spec:
     name: SOURCE_ARTIFACT
     type: string
   - description: The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.
-    name: CACHI2_ARTIFACT
+    name: PREFETCH_ARTIFACT
     type: string
     default: ""
   - default: ./Dockerfile
@@ -135,7 +135,7 @@ spec:
     args:
       - use
       - $(params.SOURCE_ARTIFACT)=/var/workdir/source
-      - $(params.CACHI2_ARTIFACT)=/var/workdir/cachi2
+      - $(params.PREFETCH_ARTIFACT)=/var/workdir/cachi2
   - image: quay.io/redhat-appstudio/buildah:v1.31.0@sha256:34f12c7b72ec2c28f1ded0c494b428df4791c909f1f174dd21b8ed6a57cf5ddb
     name: build
     computeResources:

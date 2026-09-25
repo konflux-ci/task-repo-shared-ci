@@ -47,7 +47,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 	}
 
 	prefetchResult := pipeline.TaskResult{
-		Name:        "CACHI2_ARTIFACT",
+		Name:        "PREFETCH_ARTIFACT",
 		Description: "The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.",
 		Type:        pipeline.ResultsTypeString,
 	}
@@ -59,7 +59,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 	}
 
 	usePrefetchParam := pipeline.ParamSpec{
-		Name:        "CACHI2_ARTIFACT",
+		Name:        "PREFETCH_ARTIFACT",
 		Type:        pipeline.ParamTypeString,
 		Description: "The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.",
 		Default:     &pipeline.ParamValue{Type: pipeline.ParamTypeString, StringVal: ""},
@@ -283,7 +283,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		if recipe.usePrefetch {
-			args = append(args, "$(params.CACHI2_ARTIFACT)=/var/workdir/cachi2")
+			args = append(args, "$(params.PREFETCH_ARTIFACT)=/var/workdir/cachi2")
 		}
 
 		task.Spec.Steps = append([]pipeline.Step{{
@@ -305,7 +305,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		if recipe.createPrefetch {
-			args = append(args, "$(results.CACHI2_ARTIFACT.path)=/var/workdir/cachi2")
+			args = append(args, "$(results.PREFETCH_ARTIFACT.path)=/var/workdir/cachi2")
 		}
 
 		create := pipeline.Step{
