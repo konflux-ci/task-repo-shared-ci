@@ -3,6 +3,8 @@ name: yamllint
 "on":
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   yamllint:
     runs-on: ubuntu-latest
