@@ -7,7 +7,8 @@ name: Run Go CI
       - ".github/workflows/go-ci.yaml"
   merge_group:
     types: [checks_requested]
-
+permissions:
+  contents: read
 jobs:
   go:
     name: Check source code
