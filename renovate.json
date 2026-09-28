@@ -29,7 +29,8 @@
     },
     {
       "matchDepNames": [
-        "konflux-ci"
+        "konflux-ci",
+        "konflux-ci/pipeline-migration-tool"
       ],
       "schedule": [
         "on sunday"
@@ -65,6 +66,17 @@
         "pipeline_version:\\s+(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ],
       "depNameTemplate": "tektoncd/pipeline",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)\\.github/workflows/check-task-migration\\.yaml$"
+      ],
+      "matchStrings": [
+        "pipeline-migration-tool@(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "konflux-ci/pipeline-migration-tool",
       "datasourceTemplate": "github-releases"
     }
   ]
