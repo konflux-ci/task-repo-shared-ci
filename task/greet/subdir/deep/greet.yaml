@@ -25,6 +25,9 @@ spec:
       script: |
         #!/bin/bash
         echo "Greetings from a deeply nested task!" >> "$(workspaces.source.path)/greet.txt"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
 
   workspaces:
     - name: source
