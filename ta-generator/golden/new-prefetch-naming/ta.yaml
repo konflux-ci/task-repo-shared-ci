@@ -1,0 +1,68 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: my-task-oci-ta
+  labels:
+    app.kubernetes.io/version: 0.1.0
+spec:
+  description: My task description.
+  params:
+    - name: Dockerfile
+      description: Path to a Dockerfile
+      type: string
+    - name: PREFETCH_ARTIFACT
+      description: The Trusted Artifact URI pointing to the artifact with
+        the prefetched dependencies.
+      type: string
+      default: ""
+    - name: ociArtifactExpiresAfter
+      description: Expiration date for the trusted artifacts created in the
+        OCI repository. An empty string means the artifacts do not expire.
+      type: string
+      default: ""
+    - name: ociStorage
+      description: The OCI repository where the Trusted Artifacts are stored.
+      type: string
+  results:
+    - name: PREFETCH_ARTIFACT
+      description: The Trusted Artifact URI pointing to the artifact with
+        the prefetched dependencies.
+      type: string
+  volumes:
+    - name: workdir
+      emptyDir: {}
+  steps:
+    - name: use-trusted-artifact
+      image: quay.io/konflux-ci/build-trusted-artifacts:latest@sha256:resolved
+      args:
+        - use
+        - $(params.PREFETCH_ARTIFACT)=/var/workdir/prefetch
+    - name: build
+      image: quay.io/konflux-ci/task-runner:latest
+      volumeMounts:
+        - mountPath: /var/workdir
+          name: workdir
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+        echo "Building image"
+    - name: create-trusted-artifact
+      image: quay.io/konflux-ci/build-trusted-artifacts:latest@sha256:resolved
+      args:
+        - create
+        - --store
+        - $(params.ociStorage)
+        - $(results.PREFETCH_ARTIFACT.path)=/var/workdir/prefetch
+      volumeMounts:
+        - mountPath: /var/workdir
+          name: workdir
+      env:
+        - name: IMAGE_EXPIRES_AFTER
+          value: $(params.ociArtifactExpiresAfter)
+      computeResources:
+        limits:
+          memory: 3Gi
+        requests:
+          cpu: "1"
+          memory: 3Gi

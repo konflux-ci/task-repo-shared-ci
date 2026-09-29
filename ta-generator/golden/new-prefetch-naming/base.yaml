@@ -1,0 +1,20 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: my-task
+  labels:
+    app.kubernetes.io/version: "0.1.0"
+spec:
+  description: My task description.
+  params:
+    - name: Dockerfile
+      description: Path to a Dockerfile
+      type: string
+  steps:
+    - name: build
+      image: quay.io/konflux-ci/task-runner:latest
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+        echo "Building image"
