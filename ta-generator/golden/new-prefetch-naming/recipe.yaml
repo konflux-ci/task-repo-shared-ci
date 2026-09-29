@@ -1,0 +1,6 @@
+---
+base: base.yaml
+newPrefetchNaming: true
+add:
+  - use-prefetch
+  - create-prefetch
