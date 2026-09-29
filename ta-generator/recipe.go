@@ -37,6 +37,7 @@ type Recipe struct {
 	Replacements       map[string]string                       `json:"replacements"`
 	StepWhen           map[string]pipeline.StepWhenExpressions `json:"stepWhen"`
 	Suffix             string                                  `json:"suffix"`
+	NewPrefetchNaming  bool                                    `json:"newPrefetchNaming"`
 	createPrefetch     bool
 	createSource       bool
 	usePrefetch        bool
@@ -50,6 +51,9 @@ func readRecipe(path string) (*Recipe, error) {
 	recipe := Recipe{
 		Suffix:        "-oci-ta",
 		DisplaySuffix: " oci trusted artifacts",
+		// Set to true to go from CACHI2_ARTIFACT to PREFETCH_ARTIFACT and /var/workdir/cachi2 to /var/workdir/prefetch.
+		// In the version 2.0.0, the generator will always use PREFETCH_ARTIFACT and /var/workdir/prefetch.
+		NewPrefetchNaming: false,
 	}
 
 	if err := yaml.Unmarshal(b, &recipe); err != nil {

@@ -46,8 +46,12 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		Type:        pipeline.ResultsTypeString,
 	}
 
+	prefetchResultName := "CACHI2_ARTIFACT"
+	if recipe.NewPrefetchNaming {
+		prefetchResultName = "PREFETCH_ARTIFACT"
+	}
 	prefetchResult := pipeline.TaskResult{
-		Name:        "CACHI2_ARTIFACT",
+		Name:        prefetchResultName,
 		Description: "The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.",
 		Type:        pipeline.ResultsTypeString,
 	}
@@ -58,8 +62,12 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		Description: "The Trusted Artifact URI pointing to the artifact with the application source code.",
 	}
 
+	prefetchParamName := "CACHI2_ARTIFACT"
+	if recipe.NewPrefetchNaming {
+		prefetchParamName = "PREFETCH_ARTIFACT"
+	}
 	usePrefetchParam := pipeline.ParamSpec{
-		Name:        "CACHI2_ARTIFACT",
+		Name:        prefetchParamName,
 		Type:        pipeline.ParamTypeString,
 		Description: "The Trusted Artifact URI pointing to the artifact with the prefetched dependencies.",
 		Default:     &pipeline.ParamValue{Type: pipeline.ParamTypeString, StringVal: ""},
@@ -283,7 +291,11 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		if recipe.usePrefetch {
-			args = append(args, "$(params.CACHI2_ARTIFACT)=/var/workdir/cachi2")
+			prefetchParamPath := "$(params.CACHI2_ARTIFACT)=/var/workdir/cachi2"
+			if recipe.NewPrefetchNaming {
+				prefetchParamPath = "$(params.PREFETCH_ARTIFACT)=/var/workdir/prefetch"
+			}
+			args = append(args, prefetchParamPath)
 		}
 
 		task.Spec.Steps = append([]pipeline.Step{{
@@ -305,7 +317,11 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		if recipe.createPrefetch {
-			args = append(args, "$(results.CACHI2_ARTIFACT.path)=/var/workdir/cachi2")
+			prefetchResultPath := "$(results.CACHI2_ARTIFACT.path)=/var/workdir/cachi2"
+			if recipe.NewPrefetchNaming {
+				prefetchResultPath = "$(results.PREFETCH_ARTIFACT.path)=/var/workdir/prefetch"
+			}
+			args = append(args, prefetchResultPath)
 		}
 
 		create := pipeline.Step{
