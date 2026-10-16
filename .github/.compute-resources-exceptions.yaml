@@ -1,0 +1,15 @@
+# Tasks that do not yet have computeResources.
+# Remove an entry when the task is fixed.
+exceptions:
+  - path: task/goodbye-oci-ta/goodbye-oci-ta.yaml
+    steps:
+      - use-trusted-artifact
+  - path: task/greet-oci-ta/subdir/deep/greet-oci-ta.yaml
+    steps:
+      - use-trusted-artifact
+  - path: task/hello-oci-ta/0.1/hello-oci-ta.yaml
+    steps:
+      - use-trusted-artifact
+  - path: task/hello-oci-ta/0.2/hello-oci-ta.yaml
+    steps:
+      - use-trusted-artifact

@@ -1,1 +1,2 @@
 pytest
+pyyaml==6.0.2
