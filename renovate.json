@@ -6,6 +6,19 @@
   ],
   "dependencyDashboard": false,
   "prConcurrentLimit": 40,
+  "gomod": {
+    "packageRules": [
+      {
+        "matchFileNames": ["ta-generator/**"],
+        "groupName": "ta-generator",
+        "schedule": ["monthly"]
+      },
+      {
+        "matchDepTypes": ["indirect"],
+        "enabled": false
+      }
+    ]
+  },
   "packageRules": [
     {
       "groupName": "github-actions",
