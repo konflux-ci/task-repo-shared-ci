@@ -53,6 +53,12 @@ spec:
       args:
         - use
         - $(params.SOURCE_ARTIFACT)=/var/workdir/source
+      computeResources:
+        limits:
+          memory: 4Gi
+        requests:
+          cpu: 50m
+          memory: 4Gi
     - name: hello
       image: registry.access.redhat.com/ubi9/ubi-micro:9.6@sha256:f5c5213d2969b7b11a6666fc4b849d56b48d9d7979b60a37bb853dff0255c14b
       env:
@@ -94,5 +100,5 @@ spec:
         limits:
           memory: 3Gi
         requests:
-          cpu: "1"
+          cpu: 50m
           memory: 3Gi
