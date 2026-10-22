@@ -298,10 +298,21 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 			args = append(args, prefetchParamPath)
 		}
 
+		// Project TA defaults (mem req=lim, CPU request only — no limits.cpu):
+		// use-trusted-artifact: 4Gi / 50m
 		task.Spec.Steps = append([]pipeline.Step{{
-			Name:         "use-trusted-artifact",
-			Image:        image,
-			Args:         args,
+			Name:  "use-trusted-artifact",
+			Image: image,
+			Args:  args,
+			ComputeResources: core.ResourceRequirements{
+				Requests: core.ResourceList{
+					core.ResourceCPU:    resource.MustParse("50m"),
+					core.ResourceMemory: resource.MustParse("4Gi"),
+				},
+				Limits: core.ResourceList{
+					core.ResourceMemory: resource.MustParse("4Gi"),
+				},
+			},
 			VolumeMounts: recipe.AddTAVolumeMount,
 		}}, task.Spec.Steps...)
 	}
@@ -324,6 +335,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 			args = append(args, prefetchResultPath)
 		}
 
+		// Project TA defaults: create-trusted-artifact 3Gi / 50m (was 3Gi / 1)
 		create := pipeline.Step{
 			Name:  "create-trusted-artifact",
 			Image: image,
@@ -336,7 +348,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 			Args: args,
 			ComputeResources: core.ResourceRequirements{
 				Requests: core.ResourceList{
-					core.ResourceCPU:    resource.MustParse("1"),
+					core.ResourceCPU:    resource.MustParse("50m"),
 					core.ResourceMemory: resource.MustParse("3Gi"),
 				},
 				Limits: core.ResourceList{
