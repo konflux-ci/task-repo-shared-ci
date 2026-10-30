@@ -299,9 +299,18 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		task.Spec.Steps = append([]pipeline.Step{{
-			Name:         "use-trusted-artifact",
-			Image:        image,
-			Args:         args,
+			Name:  "use-trusted-artifact",
+			Image: image,
+			Args:  args,
+			ComputeResources: core.ResourceRequirements{
+				Requests: core.ResourceList{
+					core.ResourceCPU:    resource.MustParse("50m"),
+					core.ResourceMemory: resource.MustParse("3Gi"),
+				},
+				Limits: core.ResourceList{
+					core.ResourceMemory: resource.MustParse("3Gi"),
+				},
+			},
 			VolumeMounts: recipe.AddTAVolumeMount,
 		}}, task.Spec.Steps...)
 	}
@@ -336,7 +345,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 			Args: args,
 			ComputeResources: core.ResourceRequirements{
 				Requests: core.ResourceList{
-					core.ResourceCPU:    resource.MustParse("1"),
+					core.ResourceCPU:    resource.MustParse("50m"),
 					core.ResourceMemory: resource.MustParse("3Gi"),
 				},
 				Limits: core.ResourceList{

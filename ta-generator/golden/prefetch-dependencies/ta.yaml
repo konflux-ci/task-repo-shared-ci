@@ -101,6 +101,12 @@ spec:
       args:
         - use
         - $(params.SOURCE_ARTIFACT)=/var/workdir/source
+      computeResources:
+        limits:
+          memory: 3Gi
+        requests:
+          cpu: 50m
+          memory: 3Gi
     - name: prefetch-dependencies
       image: quay.io/konflux-ci/hermeto:0.29.0@sha256:f577e0399953471df7a9826c1550aef83d28e8b35f76dd65a193441822b629ee
       volumeMounts:
@@ -191,5 +197,5 @@ spec:
         limits:
           memory: 3Gi
         requests:
-          cpu: "1"
+          cpu: 50m
           memory: 3Gi
