@@ -3,14 +3,15 @@ package main
 import (
 	"bytes"
 	"errors"
-	"fmt"
+	"flag"
 	"os"
 	"path"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/zregvart/tkn-fmt/format"
 )
+
+var update = flag.Bool("update", false, "rewrite the golden ta.yaml files with the generated output")
 
 func TestGolden(t *testing.T) {
 	dirs, err := os.ReadDir("golden")
@@ -52,29 +53,24 @@ func TestGolden(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			ta, err := os.Open(path.Join("golden", dir.Name(), "ta.yaml"))
+			golden := path.Join("golden", dir.Name(), "ta.yaml")
+
+			if *update {
+				if err := os.WriteFile(golden, got.Bytes(), 0644); err != nil {
+					t.Fatal(err)
+				}
+				return
+			}
+
+			// The golden ta.yaml files are compared byte for byte. They must match
+			// exactly what the generator produces. Run `go test -update` to regenerate them.
+			expected, err := os.ReadFile(golden)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			golden := bytes.Buffer{}
-			if err := format.Format(ta, &golden); err != nil {
-				t.Fatal(err)
-			}
-
-			expected := golden.String()
-
-			if diff := cmp.Diff(expected, got.String()); diff != "" {
-				failure := fmt.Errorf("%s mismatch (-want +got):\n%s", dir.Name(), diff)
-				if err := os.WriteFile(path.Join(path.Join("golden", dir.Name(), "got")), got.Bytes(), 0644); err != nil {
-					failure = errors.Join(failure, err)
-				}
-				if err := os.WriteFile(path.Join(path.Join("golden", dir.Name(), "expected")), golden.Bytes(), 0644); err != nil {
-					failure = errors.Join(failure, err)
-				}
-
-				t.Error(failure)
-
+			if diff := cmp.Diff(string(expected), got.String()); diff != "" {
+				t.Errorf("%s diff (-expected +got):\n%s", dir.Name(), diff)
 			}
 		})
 	}
