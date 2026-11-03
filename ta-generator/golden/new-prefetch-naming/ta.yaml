@@ -38,6 +38,12 @@ spec:
       args:
         - use
         - $(params.PREFETCH_ARTIFACT)=/var/workdir/prefetch
+      computeResources:
+        limits:
+          memory: 3Gi
+        requests:
+          cpu: 50m
+          memory: 3Gi
     - name: build
       image: quay.io/konflux-ci/task-runner:latest
       volumeMounts:
@@ -64,5 +70,5 @@ spec:
         limits:
           memory: 3Gi
         requests:
-          cpu: "1"
+          cpu: 50m
           memory: 3Gi
