@@ -1,0 +1,71 @@
+# yamllint disable-file
+
+# <TEMPLATED FILE!>
+# This file comes from the templates at https://github.com/konflux-ci/task-repo-shared-ci.
+# Please consider sending a PR upstream instead of editing the file directly.
+# See the SHARED-CI.md document in this repo for more details.
+
+name: Validate Task READMEs
+'on':
+  pull_request:
+    branches: [main]
+  merge_group:
+    types: [checks_requested]
+permissions:
+  contents: read
+jobs:
+  validate-task-readmes:
+    name: Check Task READMEs are up to date
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install yq
+        uses: mikefarah/yq@f2944b823f84906a127dbd29e4c2a3e60c4e550e # v4.54.3
+        with:
+          # Version from https://github.com/mikefarah/yq/releases
+          version: 'v4.53.3'
+
+      - name: Validate Task READMEs
+        run: |
+          #!/bin/bash
+          set -euo pipefail
+
+          # Skip if no task directory exists (e.g. in task-repo-shared-ci itself)
+          if [[ ! -d "task" ]]; then
+            echo "No task/ directory found, skipping."
+            exit 0
+          fi
+
+          # Find all Tekton Task YAML files
+          # Supports both flat (task/name/name.yaml) and versioned (task/name/0.1/name.yaml) layouts
+          task_files=()
+          while IFS= read -r file; do
+            # Verify it's actually a Tekton Task
+            if yq -e '.kind == "Task"' "$file" > /dev/null 2>&1; then
+              task_files+=("$file")
+            fi
+          done < <(find task -name '*.yaml' -type f)
+
+          if [[ ${#task_files[@]} -eq 0 ]]; then
+            echo "No Tekton Task YAML files found, skipping."
+            exit 0
+          fi
+
+          for task_yaml in "${task_files[@]}"; do
+            readme="$(dirname "$task_yaml")/README.md"
+            hack/generate-readme.sh "$task_yaml" "$readme"
+          done
+
+          if [[ -n "$(git status -s)" ]]; then
+            echo "Task READMEs are out of date. Run 'hack/generate-readme.sh' for each task to regenerate."
+            echo ""
+            echo "Changed files:"
+            git status -s
+            echo ""
+            git --no-pager diff --color
+            exit 1
+          fi
+
+          echo "All Task READMEs are up to date."
